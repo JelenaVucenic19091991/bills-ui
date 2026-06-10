@@ -12,7 +12,7 @@ export function PageLayout({ children }: PageLayoutProps): React.ReactElement {
           Bills Information
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Browse and manage bills information
+          Browse and manage bill information
         </Typography>
       </Box>
       {children}
