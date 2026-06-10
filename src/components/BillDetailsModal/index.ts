@@ -1,0 +1,1 @@
+export { BillDetailsModal } from './BillDetailsModal';
