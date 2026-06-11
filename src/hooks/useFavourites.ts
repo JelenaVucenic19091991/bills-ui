@@ -26,6 +26,7 @@ export function useFavourites(): UseFavouritesResult {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(favourites));
     } catch {
+        // Ignore write errors (e.g. storage quota exceeded)
     }
   }, [favourites]);
 

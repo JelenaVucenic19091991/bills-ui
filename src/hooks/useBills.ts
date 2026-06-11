@@ -29,7 +29,11 @@ export function useBills(
     total: query.data?.total ?? 0,
     isLoading: query.isLoading,
     isFetching: query.isFetching,
-    error: query.error instanceof Error ? query.error.message : null,
+    error: query.error
+      ? query.error instanceof Error
+        ? query.error.message
+        : String(query.error)
+      : null,
     refetch: query.refetch,
   };
 }
