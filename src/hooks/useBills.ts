@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchBills } from '../services/billsApi';
 import type { Bill } from '../types/bill';
 
@@ -6,37 +6,30 @@ interface UseBillsResult {
   bills: Bill[];
   total: number;
   isLoading: boolean;
+  isFetching: boolean;
   error: string | null;
+  refetch: () => Promise<unknown>;
 }
 
-export function useBills(page: number, rowsPerPage: number): UseBillsResult {
-  const [bills, setBills] = useState<Bill[]>([]);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function useBills(
+  page: number,
+  rowsPerPage: number,
+  enabled = true
+): UseBillsResult {
+  const query = useQuery({
+    queryKey: ['bills', page, rowsPerPage],
+    queryFn: ({ signal }) =>
+      fetchBills({ skip: page * rowsPerPage, limit: rowsPerPage, signal }),
+    placeholderData: keepPreviousData,
+    enabled,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchBills({ skip: page * rowsPerPage, limit: rowsPerPage })
-      .then((result) => {
-        if (!cancelled) {
-          setBills(result.bills);
-          setTotal(result.total);
-          setIsLoading(false);
-        }
-      })
-      .catch((err: unknown) => {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Unknown error');
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [page, rowsPerPage]);
-
-  return { bills, total, isLoading, error };
+  return {
+    bills: query.data?.bills ?? [],
+    total: query.data?.total ?? 0,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch: query.refetch,
+  };
 }

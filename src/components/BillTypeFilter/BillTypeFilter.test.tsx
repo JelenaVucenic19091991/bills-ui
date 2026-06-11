@@ -2,9 +2,11 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { BillTypeFilter } from './BillTypeFilter';
+import { ALL_FILTER } from '../../types/bill';
+import type { BillTypeFilterValue } from '../../types/bill';
 
 const defaultProps = {
-  selectedBillType: 'all',
+  selectedBillType: ALL_FILTER as BillTypeFilterValue,
   onChange: vi.fn(),
 };
 
@@ -36,6 +38,8 @@ describe('BillTypeFilter', () => {
 
   it('renders info tooltip icon', () => {
     render(<BillTypeFilter {...defaultProps} />);
-    expect(screen.getByRole('button')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Filter information' })
+    ).toBeInTheDocument();
   });
 });

@@ -1,9 +1,8 @@
 import {
-  Box,
   Chip,
   IconButton,
+  Link,
   Paper,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -15,7 +14,7 @@ import {
 } from '@mui/material';
 import type { ChipProps } from '@mui/material';
 import { Star, StarBorder } from '@mui/icons-material';
-import type { Bill } from '../../types/bill';
+import type { Bill, BillStatus  } from '../../types/bill';
 
 interface BillsTableProps {
   bills: Bill[];
@@ -30,7 +29,7 @@ interface BillsTableProps {
   emptyMessage?: string;
 }
 
-const STATUS_COLORS: Record<string, ChipProps['color']> = {
+const STATUS_COLORS: Record<BillStatus, ChipProps['color']> = {
   Current: 'success',
   Withdrawn: 'default',
   Enacted: 'primary',
@@ -78,23 +77,23 @@ export function BillsTable({
                   <TableRow
                     key={bill.uri}
                     hover
-                    tabIndex={0}
-                    role="button"
                     onClick={() => onRowClick(bill)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        onRowClick(bill);
-                      }
-                    }}
-                    sx={{
-                      cursor: 'pointer',
-                      '&:focus-visible': {
-                        boxShadow: 'inset 0 0 0 2px #1B4F72',
-                      },
-                    }}
+                    sx={{ cursor: 'pointer' }}
                   >
-                    <TableCell>{bill.number}</TableCell>
+                    <TableCell>
+                      <Link
+                        component="button"
+                        underline="hover"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onRowClick(bill);
+                        }}
+                        aria-label={`View details for bill ${bill.number}`}
+                        sx={{ font: 'inherit', color: 'inherit' }}
+                      >
+                        {bill.number}
+                      </Link>
+                    </TableCell>
                     <TableCell>{bill.billType}</TableCell>
                     <TableCell>
                       <Chip
@@ -106,15 +105,14 @@ export function BillsTable({
                     <TableCell>{bill.sponsor}</TableCell>
                     <TableCell align="center">
                       <IconButton
-                        aria-label={isFavourite ? 'Remove from favourites' : 'Add to favourites'}
+                        aria-label={
+                          isFavourite
+                            ? `Remove ${bill.number} from favourites`
+                            : `Add ${bill.number} to favourites`
+                        }
                         onClick={(e) => {
                           e.stopPropagation();
                           onFavouriteToggle(bill.uri);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.stopPropagation();
-                          }
                         }}
                         size="small"
                       >
@@ -137,18 +135,6 @@ export function BillsTable({
         onPageChange={(_, newPage) => onPageChange(newPage)}
         onRowsPerPageChange={(e) => onRowsPerPageChange(parseInt(e.target.value, 10))}
       />
-    </Paper>
-  );
-}
-
-export function BillsTableSkeleton(): React.ReactElement {
-  return (
-    <Paper elevation={1}>
-      <Box sx={{ p: 2 }}>
-        {Array.from({ length: 10 }).map((_, i) => (
-          <Skeleton key={i} height={52} sx={{ mb: 1 }} />
-        ))}
-      </Box>
     </Paper>
   );
 }

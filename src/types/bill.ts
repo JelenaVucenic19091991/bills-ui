@@ -28,12 +28,27 @@ export interface ApiResponse {
   results: Array<{ bill: ApiBill }>;
 }
 
+export const BILL_TYPES = ['Public', 'Private', 'Hybrid'] as const;
+export type BillType = (typeof BILL_TYPES)[number];
+
+export const BILL_STATUSES = [
+  'Current',
+  'Withdrawn',
+  'Enacted',
+  'Rejected',
+  'Defeated',
+  'Lapsed',
+] as const;
+export type BillStatus = (typeof BILL_STATUSES)[number];
+
+export const ALL_FILTER = 'all';
+export type BillTypeFilterValue = BillType | typeof ALL_FILTER;
+
 export interface Bill {
   uri: string;
   number: string;
-  billType: string;
-  source: string;
-  status: string; // "Current" | "Withdrawn" | "Enacted" | "Rejected" | "Defeated" | "Lapsed"
+  billType: BillType;
+  status: BillStatus;
   sponsor: string;
   titleEn: string;
   titleGa: string;

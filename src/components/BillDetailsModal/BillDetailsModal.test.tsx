@@ -8,8 +8,7 @@ const mockBill: Bill = {
   uri: '/ie/oireachtas/bill/2026/53',
   number: '2026/53',
   billType: 'Public',
-  source: 'Government',
-  status: 'First Stage',
+  status: 'Current',
   sponsor: 'Minister for Finance',
   titleEn: 'Finance Bill 2026',
   titleGa: 'An Bille Airgeadais, 2026',
@@ -53,17 +52,13 @@ describe('BillDetailsModal', () => {
   it('resets to English tab when reopened after viewing Gaeilge', async () => {
     const { rerender } = render(<BillDetailsModal {...defaultProps} />);
 
-    // Switch to Gaeilge tab
     await userEvent.click(screen.getByRole('tab', { name: 'Gaeilge' }));
     expect(screen.getByText('An Bille Airgeadais, 2026')).toBeInTheDocument();
 
-    // Close modal
     rerender(<BillDetailsModal key="closed" bill={mockBill} open={false} onClose={vi.fn()} />);
 
-    // Reopen with new key — simulates selecting a new bill in BillsPage
     rerender(<BillDetailsModal key="open" bill={mockBill} open={true} onClose={vi.fn()} />);
 
-    // Should be back on English tab
     expect(screen.getByText('Finance Bill 2026')).toBeInTheDocument();
   });
 });

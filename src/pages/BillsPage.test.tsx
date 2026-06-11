@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { ReactElement } from 'react';
 import * as billsApi from '../services/billsApi';
 import { BillsPage } from './BillsPage';
 import type { Bill } from '../types/bill';
@@ -12,7 +14,6 @@ const mockBills: Bill[] = [
     uri: '/ie/oireachtas/bill/2026/53',
     number: '2026/53',
     billType: 'Public',
-    source: 'Government',
     status: 'Current',
     sponsor: 'Minister for Finance',
     titleEn: 'Finance Bill 2026',
@@ -22,7 +23,6 @@ const mockBills: Bill[] = [
     uri: '/ie/oireachtas/bill/2026/52',
     number: '2026/52',
     billType: 'Private',
-    source: 'Private Member',
     status: 'Withdrawn',
     sponsor: 'Paul Murphy',
     titleEn: 'Some Private Bill 2026',
@@ -30,47 +30,49 @@ const mockBills: Bill[] = [
   },
 ];
 
-beforeEach(() => {
-  vi.mocked(billsApi.fetchBills).mockResolvedValue({
-    bills: mockBills,
-    total: 2,
+function renderPage(): ReactElement {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
   });
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BillsPage />
+    </QueryClientProvider>
+  );
+}
+
+beforeEach(() => {
+  localStorage.clear();
+  vi.mocked(billsApi.fetchBills).mockResolvedValue({ bills: mockBills, total: 2 });
 });
 
 afterEach(() => {
   vi.restoreAllMocks();
+  localStorage.clear();
 });
 
 describe('BillsPage', () => {
-  it('shows skeleton while loading', async () => {
-    render(<BillsPage />);
+  it('shows skeleton while loading', () => {
+    render(renderPage());
     expect(document.querySelector('.MuiSkeleton-root')).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.getByText('2026/53')).toBeInTheDocument();
-    });
   });
 
   it('renders bills after loading', async () => {
-    render(<BillsPage />);
-    await waitFor(() => {
-      expect(screen.getByText('2026/53')).toBeInTheDocument();
-    });
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
     expect(screen.getByText('2026/52')).toBeInTheDocument();
   });
 
-  it('shows error message when fetch fails', async () => {
+  it('shows error message with retry when fetch fails', async () => {
     vi.mocked(billsApi.fetchBills).mockRejectedValue(new Error('Network error'));
-    render(<BillsPage />);
-    await waitFor(() => {
-      expect(screen.getByText('Network error')).toBeInTheDocument();
-    });
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('Network error')).toBeInTheDocument());
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
   });
 
   it('opens modal when bill row is clicked', async () => {
-    render(<BillsPage />);
-    await waitFor(() => {
-      expect(screen.getByText('2026/53')).toBeInTheDocument();
-    });
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
 
     await userEvent.click(screen.getByText('2026/53'));
 
@@ -79,14 +81,12 @@ describe('BillsPage', () => {
   });
 
   it('adds bill to favourites tab when starred', async () => {
-    render(<BillsPage />);
-    await waitFor(() => {
-      expect(screen.getByText('2026/53')).toBeInTheDocument();
-    });
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
 
-    const buttons = screen.getAllByRole('button', { name: 'Add to favourites' });
-    await userEvent.click(buttons[0]!);
-
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
+    );
     await userEvent.click(screen.getByRole('tab', { name: 'Favourite Bills' }));
 
     expect(screen.getByText('2026/53')).toBeInTheDocument();
@@ -95,16 +95,13 @@ describe('BillsPage', () => {
 
   it('logs console message when bill is favourited', async () => {
     const consoleSpy = vi.spyOn(console, 'log');
-
     try {
-      render(<BillsPage />);
+      render(renderPage());
+      await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
 
-      await waitFor(() => {
-        expect(screen.getByText('2026/53')).toBeInTheDocument();
-      });
-
-      const buttons = screen.getAllByRole('button', { name: 'Add to favourites' });
-      await userEvent.click(buttons[0]!);
+      await userEvent.click(
+        screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('Favourite request dispatched')
@@ -115,15 +112,74 @@ describe('BillsPage', () => {
   });
 
   it('hides filter on Favourite Bills tab', async () => {
-    render(<BillsPage />);
-    await waitFor(() => {
-      expect(screen.getByText('2026/53')).toBeInTheDocument();
-    });
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
 
     expect(screen.getByLabelText('Filter by Bill Type')).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('tab', { name: 'Favourite Bills' }));
 
     expect(screen.queryByLabelText('Filter by Bill Type')).not.toBeInTheDocument();
+  });
+
+  it('persists favourites to localStorage', async () => {
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
+    );
+
+    const stored = localStorage.getItem('bills-ui.favourites');
+    expect(stored).toContain('/ie/oireachtas/bill/2026/53');
+  });
+
+  it('restores favourites from localStorage on mount', async () => {
+    localStorage.setItem('bills-ui.favourites', JSON.stringify([mockBills[0]]));
+
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Favourite Bills' }));
+
+    expect(screen.getByText('2026/53')).toBeInTheDocument();
+  });
+
+  it('clamps to a valid page when favourites shrink below the current page', async () => {
+    const threeFavourites = [
+      mockBills[0]!,
+      mockBills[1]!,
+      {
+        uri: '/ie/oireachtas/bill/2026/51',
+        number: '2026/51',
+        billType: 'Public' as const,
+        status: 'Current' as const,
+        sponsor: 'Minister for Health',
+        titleEn: 'Health Bill 2026',
+        titleGa: 'An Bille Sláinte, 2026',
+      },
+    ];
+    localStorage.setItem('bills-ui.favourites', JSON.stringify(threeFavourites));
+
+    render(renderPage());
+    await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Favourite Bills' }));
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove 2026/53 from favourites' })
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove 2026/52 from favourites' })
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove 2026/51 from favourites' })
+    );
+
+    expect(
+      screen.getByText(
+        'No favourite bills yet. Click the star icon to add bills to your favourites.'
+      )
+    ).toBeInTheDocument();
   });
 });

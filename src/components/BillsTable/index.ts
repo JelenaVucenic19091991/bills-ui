@@ -1,1 +1,3 @@
-export { BillsTable, BillsTableSkeleton } from './BillsTable';
+export { BillsTable } from './BillsTable';
+export { BillsTableSkeleton } from './BillsTableSkeleton';
+

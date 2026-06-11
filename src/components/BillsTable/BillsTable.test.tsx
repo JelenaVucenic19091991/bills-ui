@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
-import { BillsTable, BillsTableSkeleton } from './BillsTable';
+import { BillsTable } from './BillsTable';
 import type { Bill } from '../../types/bill';
 
 const mockBills: Bill[] = [
@@ -9,8 +9,7 @@ const mockBills: Bill[] = [
     uri: '/ie/oireachtas/bill/2026/53',
     number: '2026/53',
     billType: 'Public',
-    source: 'Government',
-    status: 'First Stage',
+    status: 'Current',
     sponsor: 'Minister for Finance',
     titleEn: 'Finance Bill 2026',
     titleGa: 'An Bille Airgeadais, 2026',
@@ -19,8 +18,7 @@ const mockBills: Bill[] = [
     uri: '/ie/oireachtas/bill/2026/52',
     number: '2026/52',
     billType: 'Private',
-    source: 'Private Member',
-    status: 'Second Stage',
+    status: 'Withdrawn',
     sponsor: 'Paul Murphy',
     titleEn: 'Some Private Bill 2026',
     titleGa: 'An Bille Príobháideach, 2026',
@@ -52,10 +50,9 @@ describe('BillsTable', () => {
     const onFavouriteToggle = vi.fn();
     render(<BillsTable {...defaultProps} onFavouriteToggle={onFavouriteToggle} />);
 
-    const buttons = screen.getAllByRole('button', { name: 'Add to favourites' });
-    const firstButton = buttons[0];
-    expect(firstButton).toBeDefined();
-    await userEvent.click(firstButton!);
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
+    );
 
     expect(onFavouriteToggle).toHaveBeenCalledWith('/ie/oireachtas/bill/2026/53');
   });
@@ -71,33 +68,65 @@ describe('BillsTable', () => {
 
   it('shows empty message when bills array is empty', () => {
     render(<BillsTable {...defaultProps} bills={[]} totalCount={0} />);
-    expect(screen.getByText('No bills match the selected filter.')).toBeInTheDocument();
+    expect(
+      screen.getByText('No bills match the selected filter.')
+    ).toBeInTheDocument();
   });
 
-  it('shows Remove from favourites aria-label for favourited bill', () => {
-    render(<BillsTable {...defaultProps} favouriteUris={['/ie/oireachtas/bill/2026/53']} />);
-    expect(screen.getByRole('button', { name: 'Remove from favourites' })).toBeInTheDocument();
+  it('shows custom empty message when provided', () => {
+    render(
+      <BillsTable
+        {...defaultProps}
+        bills={[]}
+        totalCount={0}
+        emptyMessage="No favourite bills yet."
+      />
+    );
+    expect(screen.getByText('No favourite bills yet.')).toBeInTheDocument();
   });
 
-  it('shows Add to favourites aria-label for non-favourited bills', () => {
+  it('shows Remove aria-label for favourited bill', () => {
+    render(
+      <BillsTable {...defaultProps} favouriteUris={['/ie/oireachtas/bill/2026/53']} />
+    );
+    expect(
+      screen.getByRole('button', { name: 'Remove 2026/53 from favourites' })
+    ).toBeInTheDocument();
+  });
+
+  it('shows Add aria-label for non-favourited bills', () => {
     render(<BillsTable {...defaultProps} favouriteUris={[]} />);
-    const buttons = screen.getAllByRole('button', { name: 'Add to favourites' });
-    expect(buttons).toHaveLength(2);
+    expect(
+      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add 2026/52 to favourites' })
+    ).toBeInTheDocument();
   });
 
-  it('renders skeleton rows', () => {
-    const { container } = render(<BillsTableSkeleton />);
-    expect(container.querySelectorAll('.MuiSkeleton-root')).toHaveLength(10);
-  });
-
-  it('calls onRowClick when Enter is pressed on a row', async () => {
+  it('opens bill via the Bill Number link (keyboard accessible)', async () => {
     const onRowClick = vi.fn();
     render(<BillsTable {...defaultProps} onRowClick={onRowClick} />);
 
-    const row = screen.getAllByRole('button')[0]!.closest('tr');
-    expect(row).toBeDefined();
-    await userEvent.type(row!, '{Enter}');
+    await userEvent.click(
+      screen.getByRole('button', { name: 'View details for bill 2026/53' })
+    );
 
-    expect(onRowClick).toHaveBeenCalled();
+    expect(onRowClick).toHaveBeenCalledWith(mockBills[0]);
+  });
+
+  it('calls onPageChange when next page button is clicked', async () => {
+    const onPageChange = vi.fn();
+    render(
+      <BillsTable
+        {...defaultProps}
+        totalCount={50}
+        onPageChange={onPageChange}
+      />
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'Go to next page' }));
+
+    expect(onPageChange).toHaveBeenCalledWith(1);
   });
 });

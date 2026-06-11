@@ -1,12 +1,12 @@
 import { Box, FormControl, InputLabel, MenuItem, Select, Tooltip, IconButton } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import type { SelectChangeEvent } from '@mui/material';
-
-export const BILL_TYPES = ['Public', 'Private', 'Hybrid'] as const;
+import { BILL_TYPES, ALL_FILTER } from '../../types/bill';
+import type { BillTypeFilterValue } from '../../types/bill';
 
 interface BillTypeFilterProps {
-  selectedBillType: string;
-  onChange: (billType: string) => void;
+  selectedBillType: BillTypeFilterValue;
+  onChange: (billType: BillTypeFilterValue) => void;
 }
 
 export function BillTypeFilter({
@@ -14,7 +14,7 @@ export function BillTypeFilter({
   onChange,
 }: BillTypeFilterProps): React.ReactElement {
   function handleChange(event: SelectChangeEvent): void {
-    onChange(event.target.value);
+    onChange(event.target.value as BillTypeFilterValue);
   }
 
   return (
@@ -28,7 +28,7 @@ export function BillTypeFilter({
           label="Filter by Bill Type"
           onChange={handleChange}
         >
-          <MenuItem value="all">All Types</MenuItem>
+          <MenuItem value={ALL_FILTER}>All Types</MenuItem>
           {BILL_TYPES.map((type) => (
             <MenuItem key={type} value={type}>
               {type}
@@ -37,7 +37,7 @@ export function BillTypeFilter({
         </Select>
       </FormControl>
       <Tooltip title="Filter applies to the current page only. If the selected type is not present on this page, the table will be empty.">
-        <IconButton size="small">
+        <IconButton size="small" aria-label="Filter information">
           <InfoOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>

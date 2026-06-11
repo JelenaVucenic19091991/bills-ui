@@ -1,4 +1,11 @@
-import type { ApiBill, ApiBillSponsor, ApiResponse, Bill } from '../types/bill';
+import type {
+  ApiBill,
+  ApiBillSponsor,
+  ApiResponse,
+  Bill,
+  BillType,
+  BillStatus,
+} from '../types/bill';
 
 function resolveSponsor(sponsors: ApiBillSponsor[]): string {
   const primary = sponsors.find((s) => s.sponsor.isPrimary) ?? sponsors[0];
@@ -10,9 +17,8 @@ function mapBill(raw: ApiBill): Bill {
   return {
     uri: raw.uri,
     number: `${raw.billYear}/${raw.billNo}`,
-    billType: raw.billType,
-    source: raw.source,
-    status: raw.status,
+    billType: raw.billType as BillType,
+    status: raw.status as BillStatus,
     sponsor: resolveSponsor(raw.sponsors),
     titleEn: raw.shortTitleEn,
     titleGa: raw.shortTitleGa,
@@ -22,6 +28,7 @@ function mapBill(raw: ApiBill): Bill {
 export interface FetchBillsParams {
   skip: number;
   limit: number;
+  signal?: AbortSignal;
 }
 
 export interface FetchBillsResult {
@@ -29,7 +36,11 @@ export interface FetchBillsResult {
   total: number;
 }
 
-export async function fetchBills({ skip, limit }: FetchBillsParams): Promise<FetchBillsResult> {
+export async function fetchBills({
+  skip,
+  limit,
+  signal,
+}: FetchBillsParams): Promise<FetchBillsResult> {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   if (!BASE_URL) {
@@ -41,7 +52,9 @@ export async function fetchBills({ skip, limit }: FetchBillsParams): Promise<Fet
     skip: String(skip),
   });
 
-  const response = await fetch(`${BASE_URL}/v1/legislation?${params.toString()}`);
+  const response = await fetch(`${BASE_URL}/v1/legislation?${params.toString()}`, {
+    signal,
+  });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch bills: ${response.status}`);
