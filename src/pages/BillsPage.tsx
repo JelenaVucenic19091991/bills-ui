@@ -16,8 +16,7 @@ type TabValue = 'all' | 'favourites';
 
 export function BillsPage(): React.ReactElement {
   const [activeTab, setActiveTab] = useState<TabValue>('all');
-  const [selectedBillType, setSelectedBillType] =
-    useState<BillTypeFilterValue>(ALL_FILTER);
+  const [selectedBillType, setSelectedBillType] = useState<BillTypeFilterValue>(ALL_FILTER);
 
   const { page, rowsPerPage, setPage, setRowsPerPage, resetPage } = usePagination();
   const { favourites, favouriteUris, toggleFavourite } = useFavourites();
@@ -70,8 +69,7 @@ export function BillsPage(): React.ReactElement {
 
   const handleFavouriteToggle = useCallback(
     (uri: string) => {
-      const bill =
-        bills.find((b) => b.uri === uri) ?? favourites.find((b) => b.uri === uri);
+      const bill = bills.find((b) => b.uri === uri) ?? favourites.find((b) => b.uri === uri);
       if (bill) {
         toggleFavourite(bill);
       }
@@ -140,12 +138,7 @@ export function BillsPage(): React.ReactElement {
       </Box>
 
       {selectedBill !== null && (
-        <BillDetailsModal
-          key={selectedBill.uri}
-          bill={selectedBill}
-          open
-          onClose={closeModal}
-        />
+        <BillDetailsModal key={selectedBill.uri} bill={selectedBill} open onClose={closeModal} />
       )}
     </Box>
   );

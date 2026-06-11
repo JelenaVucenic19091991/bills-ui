@@ -50,9 +50,7 @@ describe('BillsTable', () => {
     const onFavouriteToggle = vi.fn();
     render(<BillsTable {...defaultProps} onFavouriteToggle={onFavouriteToggle} />);
 
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'Add 2026/53 to favourites' }));
 
     expect(onFavouriteToggle).toHaveBeenCalledWith('/ie/oireachtas/bill/2026/53');
   });
@@ -68,9 +66,7 @@ describe('BillsTable', () => {
 
   it('shows empty message when bills array is empty', () => {
     render(<BillsTable {...defaultProps} bills={[]} totalCount={0} />);
-    expect(
-      screen.getByText('No bills match the selected filter.')
-    ).toBeInTheDocument();
+    expect(screen.getByText('No bills match the selected filter.')).toBeInTheDocument();
   });
 
   it('shows custom empty message when provided', () => {
@@ -86,9 +82,7 @@ describe('BillsTable', () => {
   });
 
   it('shows Remove aria-label for favourited bill', () => {
-    render(
-      <BillsTable {...defaultProps} favouriteUris={['/ie/oireachtas/bill/2026/53']} />
-    );
+    render(<BillsTable {...defaultProps} favouriteUris={['/ie/oireachtas/bill/2026/53']} />);
     expect(
       screen.getByRole('button', { name: 'Remove 2026/53 from favourites' })
     ).toBeInTheDocument();
@@ -96,34 +90,22 @@ describe('BillsTable', () => {
 
   it('shows Add aria-label for non-favourited bills', () => {
     render(<BillsTable {...defaultProps} favouriteUris={[]} />);
-    expect(
-      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Add 2026/52 to favourites' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add 2026/53 to favourites' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add 2026/52 to favourites' })).toBeInTheDocument();
   });
 
   it('opens bill via the Bill Number link (keyboard accessible)', async () => {
     const onRowClick = vi.fn();
     render(<BillsTable {...defaultProps} onRowClick={onRowClick} />);
 
-    await userEvent.click(
-      screen.getByRole('button', { name: 'View details for bill 2026/53' })
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'View details for bill 2026/53' }));
 
     expect(onRowClick).toHaveBeenCalledWith(mockBills[0]);
   });
 
   it('calls onPageChange when next page button is clicked', async () => {
     const onPageChange = vi.fn();
-    render(
-      <BillsTable
-        {...defaultProps}
-        totalCount={50}
-        onPageChange={onPageChange}
-      />
-    );
+    render(<BillsTable {...defaultProps} totalCount={50} onPageChange={onPageChange} />);
 
     await userEvent.click(screen.getByRole('button', { name: 'Go to next page' }));
 

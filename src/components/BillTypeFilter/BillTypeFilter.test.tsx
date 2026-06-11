@@ -38,8 +38,6 @@ describe('BillTypeFilter', () => {
 
   it('renders info tooltip icon', () => {
     render(<BillTypeFilter {...defaultProps} />);
-    expect(
-      screen.getByRole('button', { name: 'Filter information' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Filter information' })).toBeInTheDocument();
   });
 });

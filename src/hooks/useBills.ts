@@ -11,15 +11,10 @@ interface UseBillsResult {
   refetch: () => Promise<unknown>;
 }
 
-export function useBills(
-  page: number,
-  rowsPerPage: number,
-  enabled = true
-): UseBillsResult {
+export function useBills(page: number, rowsPerPage: number, enabled = true): UseBillsResult {
   const query = useQuery({
     queryKey: ['bills', page, rowsPerPage],
-    queryFn: ({ signal }) =>
-      fetchBills({ skip: page * rowsPerPage, limit: rowsPerPage, signal }),
+    queryFn: ({ signal }) => fetchBills({ skip: page * rowsPerPage, limit: rowsPerPage, signal }),
     placeholderData: keepPreviousData,
     enabled,
   });

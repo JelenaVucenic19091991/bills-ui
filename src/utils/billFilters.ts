@@ -1,10 +1,7 @@
 import type { Bill, BillTypeFilterValue } from '../types/bill';
 import { ALL_FILTER } from '../types/bill';
 
-export function filterByBillType(
-  bills: Bill[],
-  billType: BillTypeFilterValue
-): Bill[] {
+export function filterByBillType(bills: Bill[], billType: BillTypeFilterValue): Bill[] {
   if (billType === ALL_FILTER) return bills;
   return bills.filter((bill) => bill.billType === billType);
 }

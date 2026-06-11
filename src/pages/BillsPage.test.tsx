@@ -84,9 +84,7 @@ describe('BillsPage', () => {
     render(renderPage());
     await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
 
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'Add 2026/53 to favourites' }));
     await userEvent.click(screen.getByRole('tab', { name: 'Favourite Bills' }));
 
     expect(screen.getByText('2026/53')).toBeInTheDocument();
@@ -99,9 +97,7 @@ describe('BillsPage', () => {
       render(renderPage());
       await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
 
-      await userEvent.click(
-        screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
-      );
+      await userEvent.click(screen.getByRole('button', { name: 'Add 2026/53 to favourites' }));
 
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('Favourite request dispatched')
@@ -126,9 +122,7 @@ describe('BillsPage', () => {
     render(renderPage());
     await waitFor(() => expect(screen.getByText('2026/53')).toBeInTheDocument());
 
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Add 2026/53 to favourites' })
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'Add 2026/53 to favourites' }));
 
     const stored = localStorage.getItem('bills-ui.favourites');
     expect(stored).toContain('/ie/oireachtas/bill/2026/53');
@@ -166,15 +160,9 @@ describe('BillsPage', () => {
 
     await userEvent.click(screen.getByRole('tab', { name: 'Favourite Bills' }));
 
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Remove 2026/53 from favourites' })
-    );
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Remove 2026/52 from favourites' })
-    );
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Remove 2026/51 from favourites' })
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'Remove 2026/53 from favourites' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Remove 2026/52 from favourites' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Remove 2026/51 from favourites' }));
 
     expect(
       screen.getByText(
