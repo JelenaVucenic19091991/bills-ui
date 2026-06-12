@@ -45,4 +45,8 @@ export const STRINGS = {
     removeFromFavourites: (number: string) => `Remove ${number} from favourites`,
     retry: 'Retry',
   },
+  error: {
+    boundary: 'Something went wrong. Please try again.',
+    tryAgain: 'Try again',
+  },
 } as const;

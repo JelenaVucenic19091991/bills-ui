@@ -1,20 +1,23 @@
 import { Container, Box, Typography } from '@mui/material';
-import { STRINGS } from '@/shared/constants/strings';
 
 interface PageLayoutProps {
+  title: string;
+  subtitle?: string;
   children: React.ReactNode;
 }
 
-export function PageLayout({ children }: PageLayoutProps): React.ReactElement {
+export function PageLayout({ title, subtitle, children }: PageLayoutProps): React.ReactElement {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1">
-          {STRINGS.app.title}
+          {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {STRINGS.app.subtitle}
-        </Typography>
+        {subtitle && (
+          <Typography variant="body2" color="text.secondary">
+            {subtitle}
+          </Typography>
+        )}
       </Box>
       {children}
     </Container>
