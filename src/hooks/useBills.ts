@@ -1,6 +1,6 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchBills } from '../services/billsApi';
-import type { Bill } from '../types/bill';
+import { fetchBills } from '@/services/billsApi';
+import type { Bill } from '@/types/bill';
 
 interface UseBillsResult {
   bills: Bill[];

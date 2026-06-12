@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { filterByBillType, paginate } from './billFilters';
-import { ALL_FILTER } from '../types/bill';
-import type { Bill } from '../types/bill';
+import { ALL_FILTER } from '@/types/bill';
+import type { Bill } from '@/types/bill';
 
 const mockBills: Bill[] = [
   {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useFavourites } from './useFavourites';
-import type { Bill } from '../types/bill';
+import type { Bill } from '@/types/bill';
 
 const STORAGE_KEY = 'bills-ui.favourites';
 

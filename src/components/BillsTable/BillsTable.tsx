@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import type { ChipProps } from '@mui/material';
 import { Star, StarBorder } from '@mui/icons-material';
-import type { Bill, BillStatus } from '../../types/bill';
+import type { Bill, BillStatus } from '@/types/bill';
 
 interface BillsTableProps {
   bills: Bill[];

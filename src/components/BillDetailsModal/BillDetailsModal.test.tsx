@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import type { Bill } from '@/types/bill';
 import { BillDetailsModal } from './BillDetailsModal';
-import type { Bill } from '../../types/bill';
 
 const mockBill: Bill = {
   uri: '/ie/oireachtas/bill/2026/53',

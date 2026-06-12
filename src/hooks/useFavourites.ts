@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Bill } from '../types/bill';
+import type { Bill } from '@/types/bill';
 
 const STORAGE_KEY = 'bills-ui.favourites';
 

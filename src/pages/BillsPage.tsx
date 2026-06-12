@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Box, Button, LinearProgress, Tab, Tabs } from '@mui/material';
 import type { SyntheticEvent } from 'react';
-import { useBills } from '../hooks/useBills';
-import { useFavourites } from '../hooks/useFavourites';
-import { usePagination } from '../hooks/usePagination';
-import { useBillModal } from '../hooks/useBillModal';
-import { BillsTable, BillsTableSkeleton } from '../components/BillsTable';
-import { BillTypeFilter } from '../components/BillTypeFilter';
-import { BillDetailsModal } from '../components/BillDetailsModal';
-import { filterByBillType, paginate } from '../utils/billFilters';
-import { ALL_FILTER } from '../types/bill';
-import type { BillTypeFilterValue } from '../types/bill';
+import { useBills } from '@/hooks/useBills';
+import { useFavourites } from '@/hooks/useFavourites';
+import { usePagination } from '@/hooks/usePagination';
+import { useBillModal } from '@/hooks/useBillModal';
+import { BillsTable, BillsTableSkeleton } from '@/components/BillsTable';
+import { BillTypeFilter } from '@/components/BillTypeFilter';
+import { BillDetailsModal } from '@/components/BillDetailsModal';
+import { filterByBillType, paginate } from '@/utils/billFilters';
+import { ALL_FILTER } from '@/types/bill';
+import type { BillTypeFilterValue } from '@/types/bill';
 
 type TabValue = 'all' | 'favourites';
 

@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { createElement } from 'react';
 import { useBills } from './useBills';
-import * as billsApi from '../services/billsApi';
-import type { Bill } from '../types/bill';
+import * as billsApi from '@/services/billsApi';
+import type { Bill } from '@/types/bill';
 
 const mockBills: Bill[] = [
   {

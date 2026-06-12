@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { BillsTable } from './BillsTable';
-import type { Bill } from '../../types/bill';
+import type { Bill } from '@/types/bill';
 
 const mockBills: Bill[] = [
   {
