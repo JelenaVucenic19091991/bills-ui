@@ -1,4 +1,5 @@
 import { TableCell, TableRow } from '@mui/material';
+import { STRINGS } from '@/shared/constants/strings';
 import { BillNumberLink } from '@/features/bills/components/BillNumberLink';
 import { FavouriteButton } from '@/shared/components/FavouriteButton';
 import type { Bill } from '@/features/bills/types/bill';
@@ -33,8 +34,8 @@ export function BillRow({
           onToggle={() => onFavouriteToggle(bill.uri)}
           ariaLabel={
             isFavourite
-              ? `Remove ${bill.number} from favourites`
-              : `Add ${bill.number} to favourites`
+              ? STRINGS.actions.removeFromFavourites(bill.number)
+              : STRINGS.actions.addToFavourites(bill.number)
           }
         />
       </TableCell>

@@ -1,4 +1,5 @@
 import { Link } from '@mui/material';
+import { STRINGS } from '@/shared/constants/strings';
 import type { MouseEvent } from 'react';
 
 interface BillNumberLinkProps {
@@ -17,7 +18,7 @@ export function BillNumberLink({ number, onClick }: BillNumberLinkProps): React.
       component="button"
       underline="hover"
       onClick={handleClick}
-      aria-label={`View details for bill ${number}`}
+      aria-label={STRINGS.actions.viewDetails(number)}
       sx={{ font: 'inherit', color: 'inherit' }}
     >
       {number}

@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import type { Bill } from '@/features/bills/types/bill';
+import { STRINGS } from '@/shared/constants/strings';
 
 interface BillDetailsModalProps {
   bill: Bill;
@@ -33,7 +34,7 @@ export function BillDetailsModal({
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle id="bill-modal-title">Bill {bill.number}</DialogTitle>
+      <DialogTitle id="bill-modal-title">{STRINGS.modal.title(bill.number)}</DialogTitle>
 
       <DialogContent>
         <Tabs
@@ -41,8 +42,8 @@ export function BillDetailsModal({
           onChange={(_, value: number) => setActiveTab(value)}
           sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
         >
-          <Tab label="English" />
-          <Tab label="Gaeilge" />
+          <Tab label={STRINGS.modal.tabEnglish} />
+          <Tab label={STRINGS.modal.tabGaeilge} />
         </Tabs>
 
         <Box>
@@ -52,7 +53,7 @@ export function BillDetailsModal({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={onClose}>{STRINGS.modal.close}</Button>
       </DialogActions>
     </Dialog>
   );

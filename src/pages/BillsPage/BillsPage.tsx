@@ -1,4 +1,5 @@
 import { Alert, Box, Button, LinearProgress, Tab, Tabs } from '@mui/material';
+import { STRINGS } from '@/shared/constants/strings';
 import { useBillsPageState } from '@/features/bills/hooks/useBillsPageState';
 import { BillsTable, BillsTableSkeleton } from '@/features/bills/components/BillsTable';
 import { BillTypeFilter } from '@/features/bills/components/BillTypeFilter';
@@ -35,8 +36,8 @@ export function BillsPage(): React.ReactElement {
         onChange={onTabChange}
         sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
       >
-        <Tab label="All Bills" value="all" />
-        <Tab label="Favourite Bills" value="favourites" />
+        <Tab label={STRINGS.tabs.allBills} value="all" />
+        <Tab label={STRINGS.tabs.favouriteBills} value="favourites" />
       </Tabs>
 
       {!isFavouritesTab && (
@@ -57,7 +58,7 @@ export function BillsPage(): React.ReactElement {
             severity="error"
             action={
               <Button color="inherit" size="small" onClick={refetch}>
-                Retry
+                {STRINGS.actions.retry}
               </Button>
             }
           >
@@ -76,8 +77,8 @@ export function BillsPage(): React.ReactElement {
             onFavouriteToggle={onFavouriteToggle}
             emptyMessage={
               isFavouritesTab
-                ? 'No favourite bills yet. Click the star icon to add bills to your favourites.'
-                : 'No bills match the selected filter.'
+                ? STRINGS.table.emptyFavourites
+                : STRINGS.table.emptyAllBills
             }
           />
         )}

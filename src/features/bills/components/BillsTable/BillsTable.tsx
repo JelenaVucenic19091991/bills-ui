@@ -9,6 +9,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { STRINGS } from '@/shared/constants/strings';
 import { BillRow } from '@/features/bills/components/BillRow';
 import type { Bill } from '@/features/bills/types/bill';
 
@@ -35,19 +36,19 @@ export function BillsTable({
   onRowsPerPageChange,
   onRowClick,
   onFavouriteToggle,
-  emptyMessage = 'No bills match the selected filter.',
+  emptyMessage = STRINGS.table.emptyAllBills,
 }: BillsTableProps): React.ReactElement {
   return (
     <Paper elevation={1}>
       <TableContainer sx={{ overflowX: 'auto' }}>
-        <Table aria-label="Bills table">
+        <Table aria-label={STRINGS.table.ariaLabel}>
           <TableHead>
             <TableRow>
-              <TableCell>Bill Number</TableCell>
-              <TableCell>Bill Type</TableCell>
-              <TableCell>Bill Status</TableCell>
-              <TableCell>Sponsor</TableCell>
-              <TableCell align="center">Favourite</TableCell>
+              <TableCell>{STRINGS.table.columns.billNumber}</TableCell>
+              <TableCell>{STRINGS.table.columns.billType}</TableCell>
+              <TableCell>{STRINGS.table.columns.billStatus}</TableCell>
+              <TableCell>{STRINGS.table.columns.sponsor}</TableCell>
+              <TableCell align="center">{STRINGS.table.columns.favourite}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
