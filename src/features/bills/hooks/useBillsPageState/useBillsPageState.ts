@@ -64,7 +64,7 @@ export function useBillsPageState(): UseBillsPageStateResult {
       return paginate(favourites, page, rowsPerPage);
     }
     return applyFilter(bills);
-  }, [isFavouritesTab, favourites, page, rowsPerPage, bills, selectedBillType]);
+  }, [isFavouritesTab, favourites, page, rowsPerPage, bills, applyFilter]);
 
   const onTabChange = useCallback(
     (_: SyntheticEvent, value: TabValue) => {

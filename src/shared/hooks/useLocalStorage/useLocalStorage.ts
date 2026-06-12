@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type SetValue<T> = (value: T | ((prev: T) => T)) => void;
 

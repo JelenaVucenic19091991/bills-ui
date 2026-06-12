@@ -1,4 +1,14 @@
-import { Box, Paper, Skeleton } from '@mui/material';
+import {
+  Paper,
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import { STRINGS } from '@/shared/constants/strings';
 
 interface BillsTableSkeletonProps {
   rowsPerPage?: number;
@@ -9,11 +19,40 @@ export function BillsTableSkeleton({
 }: BillsTableSkeletonProps): React.ReactElement {
   return (
     <Paper elevation={1}>
-      <Box sx={{ p: 2 }}>
-        {Array.from({ length: rowsPerPage }).map((_, i) => (
-          <Skeleton key={i} height={52} sx={{ mb: 1 }} />
-        ))}
-      </Box>
+      <TableContainer sx={{ overflowX: 'auto' }}>
+        <Table aria-label={STRINGS.table.ariaLabel}>
+          <TableHead>
+            <TableRow>
+              <TableCell>{STRINGS.table.columns.billNumber}</TableCell>
+              <TableCell>{STRINGS.table.columns.billType}</TableCell>
+              <TableCell>{STRINGS.table.columns.billStatus}</TableCell>
+              <TableCell>{STRINGS.table.columns.sponsor}</TableCell>
+              <TableCell align="center">{STRINGS.table.columns.favourite}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.from({ length: rowsPerPage }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <Skeleton variant="text" width={80} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton variant="text" width={60} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton variant="rounded" width={70} height={24} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton variant="text" width={140} />
+                </TableCell>
+                <TableCell align="center">
+                  <Skeleton variant="circular" width={24} height={24} sx={{ mx: 'auto' }} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Paper>
   );
 }
