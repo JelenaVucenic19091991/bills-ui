@@ -1,5 +1,6 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchBills } from '@/features/bills/api/billsApi';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { billsQueryOptions } from '@/features/bills/api/billsQueries';
 import type { Bill } from '@/features/bills/types/bill';
 
 interface UseBillsResult {
@@ -7,23 +8,35 @@ interface UseBillsResult {
   total: number;
   isLoading: boolean;
   isFetching: boolean;
+  isPlaceholderData: boolean;
   error: string | null;
   refetch: () => Promise<unknown>;
 }
 
 export function useBills(page: number, rowsPerPage: number, enabled = true): UseBillsResult {
+  const queryClient = useQueryClient();
+
   const query = useQuery({
-    queryKey: ['bills', page, rowsPerPage],
-    queryFn: ({ signal }) => fetchBills({ skip: page * rowsPerPage, limit: rowsPerPage, signal }),
-    placeholderData: keepPreviousData,
+    ...billsQueryOptions(page, rowsPerPage),
     enabled,
   });
 
+  // Prefetch the next page so pagination feels instant.
+  // Combined with keepPreviousData, the user never sees an empty state between pages.
+  const total = query.data?.total ?? 0;
+  const hasNextPage = (page + 1) * rowsPerPage < total;
+
+  useEffect(() => {
+    if (!enabled || !hasNextPage) return;
+    queryClient.prefetchQuery(billsQueryOptions(page + 1, rowsPerPage));
+  }, [enabled, hasNextPage, page, rowsPerPage, queryClient]);
+
   return {
     bills: query.data?.bills ?? [],
-    total: query.data?.total ?? 0,
+    total,
     isLoading: query.isLoading,
     isFetching: query.isFetching,
+    isPlaceholderData: query.isPlaceholderData,
     error: query.error
       ? query.error instanceof Error
         ? query.error.message

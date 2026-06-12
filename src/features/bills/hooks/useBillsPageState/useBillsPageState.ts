@@ -29,6 +29,7 @@ interface UseBillsPageStateResult {
   selectedBill: Bill | null;
   onRowClick: (bill: Bill) => void;
   onCloseModal: () => void;
+  isPlaceholderData: boolean;
 }
 
 export function useBillsPageState(): UseBillsPageStateResult {
@@ -42,7 +43,7 @@ export function useBillsPageState(): UseBillsPageStateResult {
   const { selectedBillType, setBillType, applyFilter } = useBillFilter();
   const { selectedBill, openModal, closeModal } = useBillModal();
 
-  const { bills, total, isLoading, isFetching, error, refetch } = useBills(
+  const { bills, total, isLoading, isFetching, isPlaceholderData, error, refetch } = useBills(
     page,
     rowsPerPage,
     !isFavouritesTab
@@ -117,5 +118,6 @@ export function useBillsPageState(): UseBillsPageStateResult {
     selectedBill,
     onRowClick: openModal,
     onCloseModal: closeModal,
+    isPlaceholderData,
   };
 }

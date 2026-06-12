@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { theme } from '@/app/theme';
 import App from './App';
 import { queryClient } from '@/app/queryClient';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')!).render(
         <CssBaseline />
         <App />
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>
 );

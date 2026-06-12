@@ -25,6 +25,7 @@ export function BillsPage(): React.ReactElement {
     favouriteUris,
     onFavouriteToggle,
     selectedBill,
+    isPlaceholderData,
     onRowClick,
     onCloseModal,
   } = useBillsPageState();
@@ -65,22 +66,27 @@ export function BillsPage(): React.ReactElement {
             {error}
           </Alert>
         ) : (
-          <BillsTable
-            bills={displayedBills}
-            favouriteUris={favouriteUris}
-            totalCount={totalCount}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            onRowClick={onRowClick}
-            onFavouriteToggle={onFavouriteToggle}
-            emptyMessage={
-              isFavouritesTab
-                ? STRINGS.table.emptyFavourites
-                : STRINGS.table.emptyAllBills
-            }
-          />
+          <Box
+            sx={{
+              opacity: isPlaceholderData ? 0.6 : 1,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            <BillsTable
+              bills={displayedBills}
+              favouriteUris={favouriteUris}
+              totalCount={totalCount}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={onPageChange}
+              onRowsPerPageChange={onRowsPerPageChange}
+              onRowClick={onRowClick}
+              onFavouriteToggle={onFavouriteToggle}
+              emptyMessage={
+                isFavouritesTab ? STRINGS.table.emptyFavourites : STRINGS.table.emptyAllBills
+              }
+            />
+          </Box>
         )}
       </Box>
 
