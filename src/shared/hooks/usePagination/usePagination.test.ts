@@ -1,43 +1,74 @@
-import { describe, it, expect } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { renderHook } from '@testing-library/react';
 import { usePagination } from './usePagination';
 
 describe('usePagination', () => {
-  it('starts at page 0 with default rowsPerPage', () => {
-    const { result } = renderHook(() => usePagination());
-    expect(result.current.page).toBe(0);
-    expect(result.current.rowsPerPage).toBe(10);
+  it('computes totalPages from totalItems and rowsPerPage', () => {
+    const { result } = renderHook(() =>
+      usePagination({ totalItems: 25, rowsPerPage: 10, page: 0, onPageChange: vi.fn() })
+    );
+    expect(result.current.totalPages).toBe(3);
   });
 
-  it('accepts a custom initial rowsPerPage', () => {
-    const { result } = renderHook(() => usePagination(25));
-    expect(result.current.rowsPerPage).toBe(25);
+  it('returns at least 1 page when there are no items', () => {
+    const { result } = renderHook(() =>
+      usePagination({ totalItems: 0, rowsPerPage: 10, page: 0, onPageChange: vi.fn() })
+    );
+    expect(result.current.totalPages).toBe(1);
   });
 
-  it('updates the page', () => {
-    const { result } = renderHook(() => usePagination());
-
-    act(() => result.current.setPage(3));
-
-    expect(result.current.page).toBe(3);
+  it('goToPage calls onPageChange with the requested page', () => {
+    const onPageChange = vi.fn();
+    const { result } = renderHook(() =>
+      usePagination({ totalItems: 50, rowsPerPage: 10, page: 0, onPageChange })
+    );
+    result.current.goToPage(2);
+    expect(onPageChange).toHaveBeenCalledWith(2);
   });
 
-  it('resets page to 0 when rowsPerPage changes', () => {
-    const { result } = renderHook(() => usePagination());
-
-    act(() => result.current.setPage(5));
-    act(() => result.current.setRowsPerPage(25));
-
-    expect(result.current.rowsPerPage).toBe(25);
-    expect(result.current.page).toBe(0);
+  it('goToPage clamps to the last valid page', () => {
+    const onPageChange = vi.fn();
+    const { result } = renderHook(() =>
+      usePagination({ totalItems: 25, rowsPerPage: 10, page: 0, onPageChange })
+    );
+    // totalPages = 3 (pages 0,1,2); requesting 99 should clamp to 2
+    result.current.goToPage(99);
+    expect(onPageChange).toHaveBeenCalledWith(2);
   });
 
-  it('resets page to 0 via resetPage', () => {
-    const { result } = renderHook(() => usePagination());
+  it('goToPage clamps negative values to 0', () => {
+    const onPageChange = vi.fn();
+    const { result } = renderHook(() =>
+      usePagination({ totalItems: 25, rowsPerPage: 10, page: 1, onPageChange })
+    );
+    result.current.goToPage(-5);
+    expect(onPageChange).toHaveBeenCalledWith(0);
+  });
 
-    act(() => result.current.setPage(4));
-    act(() => result.current.resetPage());
+  it('goToFirstPage calls onPageChange with 0', () => {
+    const onPageChange = vi.fn();
+    const { result } = renderHook(() =>
+      usePagination({ totalItems: 50, rowsPerPage: 10, page: 3, onPageChange })
+    );
+    result.current.goToFirstPage();
+    expect(onPageChange).toHaveBeenCalledWith(0);
+  });
 
-    expect(result.current.page).toBe(0);
+  it('clamps automatically when page exceeds totalPages (e.g. items shrink)', () => {
+    const onPageChange = vi.fn();
+    // page 5 but only 25 items / 10 per page = 3 pages (max index 2)
+    renderHook(() =>
+      usePagination({ totalItems: 25, rowsPerPage: 10, page: 5, onPageChange })
+    );
+    // the clamp useEffect should fire on mount
+    expect(onPageChange).toHaveBeenCalledWith(2);
+  });
+
+  it('does not clamp when page is within bounds', () => {
+    const onPageChange = vi.fn();
+    renderHook(() =>
+      usePagination({ totalItems: 25, rowsPerPage: 10, page: 1, onPageChange })
+    );
+    expect(onPageChange).not.toHaveBeenCalled();
   });
 });

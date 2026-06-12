@@ -53,3 +53,5 @@ export interface Bill {
   titleEn: string;
   titleGa: string;
 }
+
+export type TabValue = 'all' | 'favourites';

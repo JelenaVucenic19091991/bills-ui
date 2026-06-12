@@ -1,16 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import type { Bill } from '@/features/bills/types/bill';
 
-const STORAGE_KEY = 'bills-ui.favourites';
-
-function loadFavourites(): Bill[] {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? (JSON.parse(stored) as Bill[]) : [];
-  } catch {
-    return [];
-  }
-}
+export const STORAGE_KEY = 'bills-ui.favourites';
 
 interface UseFavouritesResult {
   favourites: Bill[];
@@ -20,32 +12,27 @@ interface UseFavouritesResult {
 }
 
 export function useFavourites(): UseFavouritesResult {
-  const [favourites, setFavourites] = useState<Bill[]>(loadFavourites);
+  const [favourites, setFavourites] = useLocalStorage<Bill[]>(STORAGE_KEY, []);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favourites));
-    } catch {
-      // Ignore write errors (e.g. storage quota exceeded)
-    }
-  }, [favourites]);
-
-  const toggleFavourite = useCallback((bill: Bill) => {
-    setFavourites((prev) => {
-      const exists = prev.some((b) => b.uri === bill.uri);
-      console.log(
-        `Favourite request dispatched: bill ${bill.uri} → ${exists ? 'removed' : 'added'}`
-      );
-      return exists ? prev.filter((b) => b.uri !== bill.uri) : [...prev, bill];
-    });
-  }, []);
+  const toggleFavourite = useCallback(
+    (bill: Bill) => {
+      setFavourites((prev) => {
+        const exists = prev.some((b) => b.uri === bill.uri);
+        console.log(
+          `Favourite request dispatched: bill ${bill.uri} → ${exists ? 'removed' : 'added'}`
+        );
+        return exists ? prev.filter((b) => b.uri !== bill.uri) : [...prev, bill];
+      });
+    },
+    [setFavourites]
+  );
 
   const isFavourite = useCallback(
     (uri: string) => favourites.some((b) => b.uri === uri),
     [favourites]
   );
 
-  const favouriteUris = favourites.map((b) => b.uri);
+  const favouriteUris = useMemo(() => favourites.map((b) => b.uri), [favourites]);
 
   return { favourites, favouriteUris, toggleFavourite, isFavourite };
 }

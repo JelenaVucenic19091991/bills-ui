@@ -1,29 +1,51 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
-interface UsePaginationResult {
-  page: number;
+interface UsePaginationParams {
+  totalItems: number;
   rowsPerPage: number;
-  setPage: (page: number) => void;
-  setRowsPerPage: (rowsPerPage: number) => void;
-  resetPage: () => void;
+  page: number;
+  onPageChange: (page: number) => void;
 }
 
-export function usePagination(initialRowsPerPage = 10): UsePaginationResult {
-  const [page, setPageState] = useState(0);
-  const [rowsPerPage, setRowsPerPageState] = useState(initialRowsPerPage);
+interface UsePaginationResult {
+  totalPages: number;
+  goToPage: (page: number) => void;
+  goToFirstPage: () => void;
+}
 
-  const setPage = useCallback((newPage: number) => {
-    setPageState(newPage);
-  }, []);
+/**
+ * Pure pagination logic: derives totalPages and keeps the current page
+ * within valid bounds. State (page/rowsPerPage) is owned by the caller,
+ * so this hook stays presentational and reusable across any list.
+ */
+export function usePagination({
+  totalItems,
+  rowsPerPage,
+  page,
+  onPageChange,
+}: UsePaginationParams): UsePaginationResult {
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(totalItems / rowsPerPage)),
+    [totalItems, rowsPerPage]
+  );
 
-  const setRowsPerPage = useCallback((newRowsPerPage: number) => {
-    setRowsPerPageState(newRowsPerPage);
-    setPageState(0);
-  }, []);
+  // Clamp: if totalItems shrinks below the current page, snap back.
+  useEffect(() => {
+    const maxPage = totalPages - 1;
+    if (page > maxPage) {
+      onPageChange(maxPage);
+    }
+  }, [page, totalPages, onPageChange]);
 
-  const resetPage = useCallback(() => {
-    setPageState(0);
-  }, []);
+  const goToPage = useCallback(
+    (next: number) => {
+      const maxPage = totalPages - 1;
+      onPageChange(Math.min(Math.max(0, next), maxPage));
+    },
+    [totalPages, onPageChange]
+  );
 
-  return { page, rowsPerPage, setPage, setRowsPerPage, resetPage };
+  const goToFirstPage = useCallback(() => onPageChange(0), [onPageChange]);
+
+  return { totalPages, goToPage, goToFirstPage };
 }
