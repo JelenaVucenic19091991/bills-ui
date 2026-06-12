@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
-import * as billsApi from '@/services/billsApi';
+import * as billsApi from '@/features/bills/api/billsApi';
 import { BillsPage } from './BillsPage';
-import type { Bill } from '@/types/bill';
+import type { Bill } from '@/features/bills/types/bill';
 
-vi.mock('@/services/billsApi');
+vi.mock('@/features/bills/api/billsApi');
 
 const mockBills: Bill[] = [
   {

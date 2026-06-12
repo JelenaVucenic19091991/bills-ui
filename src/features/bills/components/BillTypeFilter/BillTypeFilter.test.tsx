@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { BillTypeFilter } from './BillTypeFilter';
-import { ALL_FILTER } from '@/types/bill';
-import type { BillTypeFilterValue } from '@/types/bill';
+import { ALL_FILTER } from '@/features/bills/types/bill';
+import type { BillTypeFilterValue } from '@/features/bills/types/bill';
 
 const defaultProps = {
   selectedBillType: ALL_FILTER as BillTypeFilterValue,

@@ -5,7 +5,7 @@ import type {
   Bill,
   BillType,
   BillStatus,
-} from '@/types/bill';
+} from '@/features/bills/types/bill';
 
 function resolveSponsor(sponsors: ApiBillSponsor[]): string {
   const primary = sponsors.find((s) => s.sponsor.isPrimary) ?? sponsors[0];

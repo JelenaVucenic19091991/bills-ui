@@ -1,8 +1,8 @@
 import { Box, FormControl, InputLabel, MenuItem, Select, Tooltip, IconButton } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import type { SelectChangeEvent } from '@mui/material';
-import { BILL_TYPES, ALL_FILTER } from '@/types/bill';
-import type { BillTypeFilterValue } from '@/types/bill';
+import { BILL_TYPES, ALL_FILTER } from '@/features/bills/types/bill';
+import type { BillTypeFilterValue } from '@/features/bills/types/bill';
 
 interface BillTypeFilterProps {
   selectedBillType: BillTypeFilterValue;

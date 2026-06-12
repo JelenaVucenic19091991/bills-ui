@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { Bill } from '@/types/bill';
+import type { Bill } from '@/features/bills/types/bill';
 
 interface UseBillModalResult {
   selectedBill: Bill | null;

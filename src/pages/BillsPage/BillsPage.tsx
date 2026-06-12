@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Box, Button, LinearProgress, Tab, Tabs } from '@mui/material';
 import type { SyntheticEvent } from 'react';
-import { useBills } from '@/hooks/useBills';
-import { useFavourites } from '@/hooks/useFavourites';
-import { usePagination } from '@/hooks/usePagination';
-import { useBillModal } from '@/hooks/useBillModal';
-import { BillsTable, BillsTableSkeleton } from '@/components/BillsTable';
-import { BillTypeFilter } from '@/components/BillTypeFilter';
-import { BillDetailsModal } from '@/components/BillDetailsModal';
-import { filterByBillType, paginate } from '@/utils/billFilters';
-import { ALL_FILTER } from '@/types/bill';
-import type { BillTypeFilterValue } from '@/types/bill';
+import { useBillModal } from '@/features/bills/hooks/useBillModal';
+import { BillsTable, BillsTableSkeleton } from '@/features/bills/components/BillsTable';
+import { BillTypeFilter } from '@/features/bills/components/BillTypeFilter';
+import { BillDetailsModal } from '@/features/bills/components/BillDetailsModal';
+import { filterByBillType, paginate } from '@/features/bills/utils/billFilters';
+import { ALL_FILTER } from '@/features/bills/types/bill';
+import type { BillTypeFilterValue } from '@/features/bills/types/bill';
+import { useBills } from '@/features/bills/hooks/useBills';
+import { usePagination } from '@/shared/hooks/usePagination';
+import { useFavourites } from '@/features/bills/hooks/useFavourites';
 
 type TabValue = 'all' | 'favourites';
 

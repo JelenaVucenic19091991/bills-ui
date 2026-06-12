@@ -10,7 +10,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import type { Bill } from '@/types/bill';
+import type { Bill } from '@/features/bills/types/bill';
 
 interface BillDetailsModalProps {
   bill: Bill;

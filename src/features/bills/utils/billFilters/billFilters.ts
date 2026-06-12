@@ -1,5 +1,5 @@
-import type { Bill, BillTypeFilterValue } from '@/types/bill';
-import { ALL_FILTER } from '@/types/bill';
+import type { Bill, BillTypeFilterValue } from '@/features/bills/types/bill';
+import { ALL_FILTER } from '@/features/bills/types/bill';
 
 export function filterByBillType(bills: Bill[], billType: BillTypeFilterValue): Bill[] {
   if (billType === ALL_FILTER) return bills;
