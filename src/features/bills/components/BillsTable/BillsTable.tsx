@@ -1,7 +1,4 @@
 import {
-  Chip,
-  IconButton,
-  Link,
   Paper,
   Table,
   TableBody,
@@ -12,9 +9,8 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import type { ChipProps } from '@mui/material';
-import { Star, StarBorder } from '@mui/icons-material';
-import type { Bill, BillStatus } from '@/features/bills/types/bill';
+import { BillRow } from '@/features/bills/components/BillRow';
+import type { Bill } from '@/features/bills/types/bill';
 
 interface BillsTableProps {
   bills: Bill[];
@@ -28,15 +24,6 @@ interface BillsTableProps {
   onFavouriteToggle: (uri: string) => void;
   emptyMessage?: string;
 }
-
-const STATUS_COLORS: Record<BillStatus, ChipProps['color']> = {
-  Current: 'success',
-  Withdrawn: 'default',
-  Enacted: 'primary',
-  Rejected: 'error',
-  Defeated: 'error',
-  Lapsed: 'warning',
-};
 
 export function BillsTable({
   bills,
@@ -71,57 +58,15 @@ export function BillsTable({
                 </TableCell>
               </TableRow>
             ) : (
-              bills.map((bill) => {
-                const isFavourite = favouriteUris.includes(bill.uri);
-                return (
-                  <TableRow
-                    key={bill.uri}
-                    hover
-                    onClick={() => onRowClick(bill)}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell>
-                      <Link
-                        component="button"
-                        underline="hover"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onRowClick(bill);
-                        }}
-                        aria-label={`View details for bill ${bill.number}`}
-                        sx={{ font: 'inherit', color: 'inherit' }}
-                      >
-                        {bill.number}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{bill.billType}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={bill.status}
-                        size="small"
-                        color={STATUS_COLORS[bill.status] ?? 'default'}
-                      />
-                    </TableCell>
-                    <TableCell>{bill.sponsor}</TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        aria-label={
-                          isFavourite
-                            ? `Remove ${bill.number} from favourites`
-                            : `Add ${bill.number} to favourites`
-                        }
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onFavouriteToggle(bill.uri);
-                        }}
-                        size="small"
-                      >
-                        {isFavourite ? <Star color="warning" /> : <StarBorder />}
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+              bills.map((bill) => (
+                <BillRow
+                  key={bill.uri}
+                  bill={bill}
+                  isFavourite={favouriteUris.includes(bill.uri)}
+                  onRowClick={onRowClick}
+                  onFavouriteToggle={onFavouriteToggle}
+                />
+              ))
             )}
           </TableBody>
         </Table>
