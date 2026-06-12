@@ -90,9 +90,11 @@ export function BillsPage(): React.ReactElement {
         )}
       </Box>
 
-      {selectedBill !== null && (
-        <BillDetailsModal key={selectedBill.uri} bill={selectedBill} open onClose={onCloseModal} />
-      )}
+      <BillDetailsModal
+        bill={selectedBill}
+        open={selectedBill !== null}
+        onClose={onCloseModal}
+      />
     </Box>
   );
 }

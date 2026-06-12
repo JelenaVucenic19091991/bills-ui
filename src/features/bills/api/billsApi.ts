@@ -8,6 +8,12 @@ import type {
 } from '@/features/bills/types/bill';
 import { BILL_TYPES, BILL_STATUSES } from '@/features/bills/types/bill';
 
+ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+if (!BASE_URL) {
+  throw new Error('VITE_API_BASE_URL is not defined. Check your .env file.');
+}
+
 const ENDPOINTS = {
   legislation: '/v1/legislation',
 } as const;
@@ -71,12 +77,6 @@ export async function fetchBills({
   limit,
   signal,
 }: FetchBillsParams): Promise<FetchBillsResult> {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  if (!BASE_URL) {
-    throw new Error('VITE_API_BASE_URL is not defined. Check your .env file.');
-  }
-
   const params = new URLSearchParams({
     limit: String(limit),
     skip: String(skip),

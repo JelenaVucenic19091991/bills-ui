@@ -95,3 +95,22 @@ src/
   Bill number, Bill type, Bill status, and Sponsor as the required columns
 - **Runtime validation** - the mapper trusts the documented API contract when narrowing
   `billType`/`status` to union types; a production app would add schema validation (e.g. Zod)
+
+## Bill Type Filter — Design Decision
+
+The Oireachtas API does not support filtering by `billType` as a query parameter 
+(only `bill_status` and `bill_source` are supported). With ~6000 bills and a 
+per-request limit of 1000 records, two approaches were possible:
+
+1. **Fetch all records client-side** (6+ paginated requests) to enable global 
+   filtering — but this loads the entire dataset into memory and discards efficient 
+   server-side pagination.
+
+2. **Keep server-side pagination** and apply the bill-type filter to the currently 
+   loaded page.
+
+I choose **(2)**: server-side pagination is the correct pattern for a dataset of this 
+size, and loading 6000+ records solely to filter on a non-indexed field is a poor 
+trade-off. The filter therefore applies to the current page, with a tooltip informing 
+the user. In production, the ideal solution would be for the API to support `billType` 
+as a query parameter, enabling true server-side filtering without sacrificing pagination.

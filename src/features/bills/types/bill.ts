@@ -1,7 +1,7 @@
 export interface ApiBillSponsor {
   sponsor: {
-    as: { showAs: string | null };
-    by: { showAs: string | null };
+    as?: { showAs: string | null };
+    by?: { showAs: string | null };
     isPrimary: boolean;
   };
 }
@@ -29,7 +29,7 @@ export interface ApiResponse {
 }
 
 export const BILL_TYPES = ['Public', 'Private', 'Hybrid'] as const;
-export type BillType = (typeof BILL_TYPES)[number];
+export type BillType = (typeof BILL_TYPES)[number] | 'Unknown';
 
 export const BILL_STATUSES = [
   'Current',
@@ -39,7 +39,7 @@ export const BILL_STATUSES = [
   'Defeated',
   'Lapsed',
 ] as const;
-export type BillStatus = (typeof BILL_STATUSES)[number];
+export type BillStatus = (typeof BILL_STATUSES)[number] | 'Unknown';
 
 export const ALL_FILTER = 'all';
 export type BillTypeFilterValue = BillType | typeof ALL_FILTER;

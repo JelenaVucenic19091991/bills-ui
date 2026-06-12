@@ -18,6 +18,7 @@ export function useFavourites(): UseFavouritesResult {
     (bill: Bill) => {
       setFavourites((prev) => {
         const exists = prev.some((b) => b.uri === bill.uri);
+        // Mock server request, required by the assessment spec (no real endpoint).
         console.log(
           `Favourite request dispatched: bill ${bill.uri} → ${exists ? 'removed' : 'added'}`
         );

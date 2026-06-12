@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import type { Bill } from '@/features/bills/types/bill';
 import { STRINGS } from '@/shared/constants/strings';
 
 interface BillDetailsModalProps {
-  bill: Bill;
+  bill: Bill | null;
   open: boolean;
   onClose: () => void;
 }
@@ -26,28 +26,34 @@ export function BillDetailsModal({
 }: BillDetailsModalProps): React.ReactElement {
   const [activeTab, setActiveTab] = useState(0);
 
-  // Title tabs are data-driven so adding a language later is a one-line change.
-  const titleTabs = [
-    { label: STRINGS.modal.tabEnglish, content: bill.titleEn },
-    { label: STRINGS.modal.tabGaeilge, content: bill.titleGa },
-  ];
+  useEffect(() => {
+    if (bill) setActiveTab(0);
+  }, [bill]);
+
+  const titleTabs = bill
+    ? [
+        { label: STRINGS.modal.tabEnglish, content: bill.titleEn },
+        { label: STRINGS.modal.tabGaeilge, content: bill.titleGa },
+      ]
+    : [];
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
       aria-labelledby="bill-modal-title"
-      aria-describedby="bill-modal-content"
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle id="bill-modal-title">{STRINGS.modal.title(bill.number)}</DialogTitle>
+      <DialogTitle id="bill-modal-title">
+        {bill ? STRINGS.modal.title(bill.number) : ''}
+      </DialogTitle>
 
-      <DialogContent id="bill-modal-content">
+      <DialogContent>
         <Tabs
           value={activeTab}
           onChange={(_, value: number) => setActiveTab(value)}
-          aria-label={STRINGS.modal.title(bill.number)}
+          aria-label="Bill title language"
           sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
         >
           {titleTabs.map((tab, index) => (
