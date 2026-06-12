@@ -1,20 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { theme } from '@/theme';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { theme } from '@/app/theme';
 import App from './App';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { queryClient } from '@/app/queryClient';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
