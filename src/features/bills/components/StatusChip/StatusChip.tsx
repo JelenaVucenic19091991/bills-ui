@@ -7,5 +7,5 @@ interface StatusChipProps {
 }
 
 export function StatusChip({ status }: StatusChipProps): React.ReactElement {
-  return <Chip label={status} size="small" color={STATUS_COLORS[status] ?? 'default'} />;
+  return <Chip label={status} size="small" color={STATUS_COLORS[status]} />;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -17,26 +17,15 @@ interface BillDetailsModalProps {
   bill: Bill | null;
   open: boolean;
   onClose: () => void;
+  onExited?: () => void;
 }
 
 export function BillDetailsModal({
   bill,
   open,
   onClose,
+  onExited,
 }: BillDetailsModalProps): React.ReactElement {
-  const [activeTab, setActiveTab] = useState(0);
-
-  useEffect(() => {
-    if (bill) setActiveTab(0);
-  }, [bill]);
-
-  const titleTabs = bill
-    ? [
-        { label: STRINGS.modal.tabEnglish, content: bill.titleEn },
-        { label: STRINGS.modal.tabGaeilge, content: bill.titleGa },
-      ]
-    : [];
-
   return (
     <Dialog
       open={open}
@@ -44,10 +33,34 @@ export function BillDetailsModal({
       aria-labelledby="bill-modal-title"
       maxWidth="sm"
       fullWidth
+      slotProps={{ transition: { onExited } }}
     >
-      <DialogTitle id="bill-modal-title">
-        {bill ? STRINGS.modal.title(bill.number) : ''}
-      </DialogTitle>
+      {bill && <BillDetailsContent key={bill.uri} bill={bill} onClose={onClose} />}
+    </Dialog>
+  );
+}
+
+interface BillDetailsContentProps {
+  bill: Bill;
+  onClose: () => void;
+}
+
+/**
+ * Inner content keyed by bill.uri so tab state resets per bill via remount,
+ * not via an effect. Kept mounted by the parent Dialog during the exit
+ * transition, so content doesn't blank out mid-animation.
+ */
+function BillDetailsContent({ bill, onClose }: BillDetailsContentProps): React.ReactElement {
+  const [activeTab, setActiveTab] = useState(0);
+
+  const titleTabs = [
+    { label: STRINGS.modal.tabEnglish, content: bill.titleEn },
+    { label: STRINGS.modal.tabGaeilge, content: bill.titleGa },
+  ];
+
+  return (
+    <>
+      <DialogTitle id="bill-modal-title">{STRINGS.modal.title(bill.number)}</DialogTitle>
 
       <DialogContent>
         <Tabs
@@ -82,6 +95,6 @@ export function BillDetailsModal({
       <DialogActions>
         <Button onClick={onClose}>{STRINGS.modal.close}</Button>
       </DialogActions>
-    </Dialog>
+    </>
   );
 }

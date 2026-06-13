@@ -30,6 +30,8 @@ interface UseBillsPageStateResult {
   onRowClick: (bill: Bill) => void;
   onCloseModal: () => void;
   isPlaceholderData: boolean;
+  onModalExited: () => void;
+  isModalOpen: boolean;
 }
 
 export function useBillsPageState(): UseBillsPageStateResult {
@@ -41,7 +43,7 @@ export function useBillsPageState(): UseBillsPageStateResult {
 
   const { favourites, favouriteUris, toggleFavourite } = useFavourites();
   const { selectedBillType, setBillType, applyFilter } = useBillFilter();
-  const { selectedBill, openModal, closeModal } = useBillModal();
+  const { selectedBill, isOpen, openModal, closeModal, clearBill } = useBillModal();
 
   const { bills, total, isLoading, isFetching, isPlaceholderData, error, refetch } = useBills(
     page,
@@ -51,7 +53,6 @@ export function useBillsPageState(): UseBillsPageStateResult {
 
   const totalCount = isFavouritesTab ? favourites.length : total;
 
-  // Pure pagination helper: owns no state, just clamps page within bounds
   const { goToFirstPage } = usePagination({
     totalItems: totalCount,
     rowsPerPage,
@@ -119,5 +120,7 @@ export function useBillsPageState(): UseBillsPageStateResult {
     onRowClick: openModal,
     onCloseModal: closeModal,
     isPlaceholderData,
+    onModalExited: clearBill,
+    isModalOpen: isOpen,
   };
 }

@@ -29,7 +29,7 @@ function toBillType(value: string): BillType {
   if ((BILL_TYPES as readonly string[]).includes(value)) {
     return value as BillType;
   }
-  console.log(`Unexpected billType from API: "${value}", falling back to '${BILL_TYPES[0]}'`);
+  console.warn(`Unexpected billType from API: "${value}", mapping to 'Unknown'`);
   return BILL_TYPES[0];
 }
 
@@ -37,8 +37,8 @@ function toBillStatus(value: string): BillStatus {
   if ((BILL_STATUSES as readonly string[]).includes(value)) {
     return value as BillStatus;
   }
-  console.log(
-    `Unexpected status from API: "${value}", falling back to '${BILL_STATUSES[0]}'`
+  console.warn(
+    `Unexpected status from API: "${value}", mapping to 'Unknown'`
   );
   return BILL_STATUSES[0];
 }
@@ -87,7 +87,7 @@ export async function fetchBills({
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch bills: ${response.status}`);
+    throw new ApiError(response.status, `Failed to fetch bills: ${response.status}`);
   }
 
   const data: ApiResponse = await response.json();
@@ -95,4 +95,14 @@ export async function fetchBills({
     bills: data.results.map(({ bill }) => mapBill(bill)),
     total: data.head.counts.billCount,
   };
+}
+
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }

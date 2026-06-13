@@ -49,4 +49,9 @@ export const STRINGS = {
     boundary: 'Something went wrong. Please try again.',
     tryAgain: 'Try again',
   },
+  status: {
+    loading: 'Loading bills…',
+    error: 'Failed to load bills.',
+    loaded: (count: number) => `${count} bills loaded.`,
+  },
 } as const;

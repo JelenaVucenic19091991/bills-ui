@@ -1,9 +1,9 @@
 import { TableCell, TableRow } from '@mui/material';
+import type { KeyboardEvent } from 'react';
 import { STRINGS } from '@/shared/constants/strings';
-import { BillNumberLink } from '@/features/bills/components/BillNumberLink';
 import { FavouriteButton } from '@/shared/components/FavouriteButton';
-import type { Bill } from '@/features/bills/types/bill';
 import { StatusChip } from '@/features/bills/components/StatusChip';
+import type { Bill } from '@/features/bills/types/bill';
 
 interface BillRowProps {
   bill: Bill;
@@ -18,11 +18,26 @@ export function BillRow({
   onRowClick,
   onFavouriteToggle,
 }: BillRowProps): React.ReactElement {
+  function handleKeyDown(event: KeyboardEvent<HTMLTableRowElement>): void {
+    // Only activate when the row itself is focused — not a child control
+    // (e.g. the favourite button), which handles its own interaction.
+    if (event.target !== event.currentTarget) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onRowClick(bill);
+    }
+  }
+
   return (
-    <TableRow hover onClick={() => onRowClick(bill)} sx={{ cursor: 'pointer' }}>
-      <TableCell>
-        <BillNumberLink number={bill.number} onClick={() => onRowClick(bill)} />
-      </TableCell>
+    <TableRow
+      hover
+      onClick={() => onRowClick(bill)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      aria-label={STRINGS.actions.viewDetails(bill.number)}
+      sx={{ cursor: 'pointer' }}
+    >
+      <TableCell>{bill.number}</TableCell>
       <TableCell>{bill.billType}</TableCell>
       <TableCell>
         <StatusChip status={bill.status} />

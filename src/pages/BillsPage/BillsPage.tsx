@@ -28,6 +28,7 @@ export function BillsPage(): React.ReactElement {
     isPlaceholderData,
     onRowClick,
     onCloseModal,
+    onModalExited,
   } = useBillsPageState();
 
   return (
@@ -47,7 +48,7 @@ export function BillsPage(): React.ReactElement {
         </Box>
       )}
 
-      <Box sx={{ position: 'relative' }} aria-live="polite">
+      <Box sx={{ position: 'relative' }}>
         {isFetching && !isLoading && (
           <LinearProgress sx={{ position: 'absolute', top: 0, left: 0, right: 0 }} />
         )}
@@ -94,6 +95,7 @@ export function BillsPage(): React.ReactElement {
         bill={selectedBill}
         open={selectedBill !== null}
         onClose={onCloseModal}
+        onExited={onModalExited}
       />
     </Box>
   );

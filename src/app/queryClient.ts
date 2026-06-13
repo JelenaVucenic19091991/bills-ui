@@ -1,3 +1,4 @@
+import { ApiError } from '@/features/bills/api/billsApi';
 import { QueryClient } from '@tanstack/react-query';
 
 // Cache timing constants
@@ -9,7 +10,12 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
-      retry: 1,
+      retry: (failureCount, error) => {
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+          return false;
+        }
+        return failureCount < 1;
+      },
       refetchOnWindowFocus: false,
     },
   },

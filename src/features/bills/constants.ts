@@ -8,4 +8,5 @@ export const STATUS_COLORS: Record<BillStatus, ChipProps['color']> = {
   Rejected: 'error',
   Defeated: 'error',
   Lapsed: 'warning',
+  Unknown: 'default',
 };

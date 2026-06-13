@@ -18,7 +18,7 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'no-console': ['warn', { allow: ['log'] }],
+      'no-console': ['warn', { allow: ['log', 'warn', 'error'] }],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
     },
