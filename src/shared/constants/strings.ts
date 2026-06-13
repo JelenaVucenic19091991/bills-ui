@@ -30,7 +30,7 @@ export const STRINGS = {
     label: 'Filter by Bill Type',
     allTypes: 'All Types',
     tooltip:
-      'Filter applies to the current page only. If the selected type is not present on this page, the table will be empty.',
+      'Filtering loads the full dataset once and applies across all bills, not just the current page.',
     infoAriaLabel: 'Filter information',
   },
   modal: {
@@ -53,5 +53,6 @@ export const STRINGS = {
     loading: 'Loading bills…',
     error: 'Failed to load bills.',
     loaded: (count: number) => `${count} bills loaded.`,
+    loadingAll: 'Loading all bills to filter across the full dataset…',
   },
 } as const;

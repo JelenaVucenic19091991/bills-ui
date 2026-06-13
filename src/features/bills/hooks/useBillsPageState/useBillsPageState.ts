@@ -1,12 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
 import type { SyntheticEvent } from 'react';
 import { useBills } from '@/features/bills/hooks/useBills';
+import { useAllBills } from '@/features/bills/hooks/useAllBills';
 import { useFavourites } from '@/features/bills/hooks/useFavourites';
 import { useBillFilter } from '@/features/bills/hooks/useBillFilter';
 import { useBillModal } from '@/features/bills/hooks/useBillModal';
 import { usePagination } from '@/shared/hooks/usePagination';
 import { paginate } from '@/features/bills/utils/billFilters';
 import { ROWS_PER_PAGE_DEFAULT } from '@/features/bills/constants';
+import { ALL_FILTER } from '@/features/bills/types/bill';
 import type { Bill, BillTypeFilterValue, TabValue } from '@/features/bills/types/bill';
 
 interface UseBillsPageStateResult {
@@ -33,6 +35,7 @@ interface UseBillsPageStateResult {
   isPlaceholderData: boolean;
   onModalExited: () => void;
   isModalOpen: boolean;
+  hasFilter: boolean;
 }
 
 export function useBillsPageState(): UseBillsPageStateResult {
@@ -46,13 +49,39 @@ export function useBillsPageState(): UseBillsPageStateResult {
   const { selectedBillType, setBillType, applyFilter, resetFilter } = useBillFilter();
   const { selectedBill, isOpen, openModal, closeModal, clearBill } = useBillModal();
 
-  const { bills, total, isLoading, isFetching, isPlaceholderData, error, refetch } = useBills(
-    page,
-    rowsPerPage,
-    !isFavouritesTab
+  // A bill-type filter is active only on the All Bills tab with a non-default type.
+  const hasFilter = !isFavouritesTab && selectedBillType !== ALL_FILTER;
+
+  // Server-paginated query: active on All Bills tab when NO filter is applied.
+  const {
+    bills,
+    total,
+    isLoading: isServerLoading,
+    isFetching,
+    isPlaceholderData,
+    error: serverError,
+    refetch,
+  } = useBills(page, rowsPerPage, !isFavouritesTab && !hasFilter);
+
+  // Full-dataset query: active only when a filter is applied (fetched once, cached).
+  const {
+    allBills,
+    isLoading: isAllLoading,
+    isFetching: isAllFetching,
+    error: allError,
+  } = useAllBills(hasFilter);
+
+  // Filtered + client-paginated result, computed only when a filter is active.
+  const filteredAllBills = useMemo(
+    () => (hasFilter ? applyFilter(allBills) : []),
+    [hasFilter, applyFilter, allBills]
   );
 
-  const totalCount = isFavouritesTab ? favourites.length : total;
+  const totalCount = useMemo(() => {
+    if (isFavouritesTab) return favourites.length;
+    if (hasFilter) return filteredAllBills.length;
+    return total;
+  }, [isFavouritesTab, hasFilter, favourites.length, filteredAllBills.length, total]);
 
   const { goToFirstPage } = usePagination({
     totalItems: totalCount,
@@ -65,8 +94,16 @@ export function useBillsPageState(): UseBillsPageStateResult {
     if (isFavouritesTab) {
       return paginate(favourites, page, rowsPerPage);
     }
-    return applyFilter(bills);
-  }, [isFavouritesTab, favourites, page, rowsPerPage, bills, applyFilter]);
+    if (hasFilter) {
+      return paginate(filteredAllBills, page, rowsPerPage);
+    }
+    return bills;
+  }, [isFavouritesTab, hasFilter, favourites, filteredAllBills, bills, page, rowsPerPage]);
+
+  // Loading/fetching/error reflect whichever source is active.
+  const isLoading = hasFilter ? isAllLoading : isServerLoading;
+  const isFetchingState = hasFilter ? isAllFetching : isFetching;
+  const error = hasFilter ? allError : serverError;
 
   const onTabChange = useCallback(
     (_: SyntheticEvent, value: TabValue) => {
@@ -95,12 +132,15 @@ export function useBillsPageState(): UseBillsPageStateResult {
 
   const onFavouriteToggle = useCallback(
     (uri: string) => {
-      const bill = bills.find((b) => b.uri === uri) ?? favourites.find((b) => b.uri === uri);
+      const bill =
+        bills.find((b) => b.uri === uri) ??
+        allBills.find((b) => b.uri === uri) ??
+        favourites.find((b) => b.uri === uri);
       if (bill) {
         toggleFavourite(bill);
       }
     },
-    [bills, favourites, toggleFavourite]
+    [bills, allBills, favourites, toggleFavourite]
   );
 
   return {
@@ -110,7 +150,7 @@ export function useBillsPageState(): UseBillsPageStateResult {
     displayedBills,
     totalCount,
     isLoading,
-    isFetching,
+    isFetching: isFetchingState,
     error,
     refetch,
     selectedBillType,
@@ -127,5 +167,6 @@ export function useBillsPageState(): UseBillsPageStateResult {
     isPlaceholderData,
     onModalExited: clearBill,
     isModalOpen: isOpen,
+    hasFilter,
   };
 }

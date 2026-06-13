@@ -95,6 +95,33 @@ export async function fetchBills({
   };
 }
 
+const MAX_LIMIT = 1000;
+
+/**
+ * Fetches the entire bills dataset by paginating through the API in chunks of
+ * MAX_LIMIT. The first request reveals the total count; the remaining pages are
+ * fetched in parallel. Used only when a client-side filter is active, since the
+ * API doesn't support filtering by billType server-side.
+ */
+export async function fetchAllBills(signal?: AbortSignal): Promise<Bill[]> {
+  // First page also tells us the total count.
+  const first = await fetchBills({ skip: 0, limit: MAX_LIMIT, signal });
+
+  const totalPages = Math.ceil(first.total / MAX_LIMIT);
+  if (totalPages <= 1) {
+    return first.bills;
+  }
+
+  // Fetch remaining pages in parallel (skip = 1000, 2000, ...).
+  const remaining = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, i) =>
+      fetchBills({ skip: (i + 1) * MAX_LIMIT, limit: MAX_LIMIT, signal })
+    )
+  );
+
+  return [first.bills, ...remaining.map((r) => r.bills)].flat();
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,

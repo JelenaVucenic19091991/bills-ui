@@ -8,6 +8,7 @@ import { fetchBills } from '@/features/bills/api/billsApi';
 export const billsQueryKeys = {
   all: ['bills'] as const,
   page: (page: number, rowsPerPage: number) => ['bills', page, rowsPerPage] as const,
+  allBills: () => ['bills', 'all'] as const,
 };
 
 /**

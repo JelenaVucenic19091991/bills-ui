@@ -32,13 +32,16 @@ export function BillsPage(): ReactElement {
     onRowClick,
     onCloseModal,
     onModalExited,
+    hasFilter,
   } = useBillsPageState();
 
   const statusMessage = isLoading
-    ? STRINGS.status.loading
-    : error
-      ? STRINGS.status.error
-      : STRINGS.status.loaded(totalCount);
+  ? hasFilter
+    ? STRINGS.status.loadingAll
+    : STRINGS.status.loading
+  : error
+    ? STRINGS.status.error
+    : STRINGS.status.loaded(totalCount);
 
   return (
     <Box>
@@ -83,7 +86,14 @@ export function BillsPage(): ReactElement {
         )}
 
         {isLoading ? (
+          <>
+           {hasFilter && (
+              <Alert severity="info" sx={{ mb: 2 }}>
+                {STRINGS.status.loadingAll}
+              </Alert>
+            )}
           <BillsTableSkeleton rowsPerPage={rowsPerPage} />
+          </>
         ) : error ? (
           <Alert
             severity="error"
@@ -98,7 +108,7 @@ export function BillsPage(): ReactElement {
         ) : (
           <Box
             sx={{
-              opacity: isPlaceholderData ? 0.6 : 1,
+              opacity: isPlaceholderData && !hasFilter && !isFavouritesTab ? 0.6 : 1,
               transition: 'opacity 0.2s',
             }}
           >
