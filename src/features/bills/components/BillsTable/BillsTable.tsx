@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { STRINGS } from '@/shared/constants/strings';
+import { BILL_TABLE_COLUMNS, ROWS_PER_PAGE_OPTIONS } from '@/features/bills/constants';
 import { BillRow } from '@/features/bills/components/BillRow';
 import type { Bill } from '@/features/bills/types/bill';
 
@@ -44,11 +45,9 @@ export function BillsTable({
         <Table aria-label={STRINGS.table.ariaLabel}>
           <TableHead>
             <TableRow>
-              <TableCell>{STRINGS.table.columns.billNumber}</TableCell>
-              <TableCell>{STRINGS.table.columns.billType}</TableCell>
-              <TableCell>{STRINGS.table.columns.billStatus}</TableCell>
-              <TableCell>{STRINGS.table.columns.sponsor}</TableCell>
-              <TableCell align="center">{STRINGS.table.columns.favourite}</TableCell>
+              {BILL_TABLE_COLUMNS.map((col) => (
+                <TableCell key={col.key} align={col.align}>{col.label}</TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -77,7 +76,7 @@ export function BillsTable({
         count={totalCount}
         page={page}
         rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[10, 25, 50]}
+        rowsPerPageOptions={[...ROWS_PER_PAGE_OPTIONS]}
         onPageChange={(_, newPage) => onPageChange(newPage)}
         onRowsPerPageChange={(e) => onRowsPerPageChange(parseInt(e.target.value, 10))}
       />

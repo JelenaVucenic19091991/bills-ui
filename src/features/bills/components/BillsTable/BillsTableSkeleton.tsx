@@ -9,13 +9,14 @@ import {
   TableRow,
 } from '@mui/material';
 import { STRINGS } from '@/shared/constants/strings';
+import { BILL_TABLE_COLUMNS, ROWS_PER_PAGE_DEFAULT } from '@/features/bills/constants';
 
 interface BillsTableSkeletonProps {
   rowsPerPage?: number;
 }
 
 export function BillsTableSkeleton({
-  rowsPerPage = 10,
+  rowsPerPage = ROWS_PER_PAGE_DEFAULT,
 }: BillsTableSkeletonProps): React.ReactElement {
   return (
     <Paper elevation={1}>
@@ -23,11 +24,9 @@ export function BillsTableSkeleton({
         <Table aria-label={STRINGS.table.ariaLabel}>
           <TableHead>
             <TableRow>
-              <TableCell>{STRINGS.table.columns.billNumber}</TableCell>
-              <TableCell>{STRINGS.table.columns.billType}</TableCell>
-              <TableCell>{STRINGS.table.columns.billStatus}</TableCell>
-              <TableCell>{STRINGS.table.columns.sponsor}</TableCell>
-              <TableCell align="center">{STRINGS.table.columns.favourite}</TableCell>
+              {BILL_TABLE_COLUMNS.map((col) => (
+                <TableCell key={col.key} align={col.align}>{col.label}</TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>

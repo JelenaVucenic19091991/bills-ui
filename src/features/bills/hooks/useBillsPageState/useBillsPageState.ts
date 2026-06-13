@@ -6,6 +6,7 @@ import { useBillFilter } from '@/features/bills/hooks/useBillFilter';
 import { useBillModal } from '@/features/bills/hooks/useBillModal';
 import { usePagination } from '@/shared/hooks/usePagination';
 import { paginate } from '@/features/bills/utils/billFilters';
+import { ROWS_PER_PAGE_DEFAULT } from '@/features/bills/constants';
 import type { Bill, BillTypeFilterValue, TabValue } from '@/features/bills/types/bill';
 
 interface UseBillsPageStateResult {
@@ -37,12 +38,12 @@ interface UseBillsPageStateResult {
 export function useBillsPageState(): UseBillsPageStateResult {
   const [activeTab, setActiveTab] = useState<TabValue>('all');
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPageState] = useState(10);
+  const [rowsPerPage, setRowsPerPageState] = useState(ROWS_PER_PAGE_DEFAULT);
 
   const isFavouritesTab = activeTab === 'favourites';
 
   const { favourites, favouriteUris, toggleFavourite } = useFavourites();
-  const { selectedBillType, setBillType, applyFilter } = useBillFilter();
+  const { selectedBillType, setBillType, applyFilter, resetFilter } = useBillFilter();
   const { selectedBill, isOpen, openModal, closeModal, clearBill } = useBillModal();
 
   const { bills, total, isLoading, isFetching, isPlaceholderData, error, refetch } = useBills(
@@ -71,8 +72,9 @@ export function useBillsPageState(): UseBillsPageStateResult {
     (_: SyntheticEvent, value: TabValue) => {
       setActiveTab(value);
       goToFirstPage();
+      resetFilter();
     },
-    [goToFirstPage]
+    [goToFirstPage, resetFilter]
   );
 
   const onBillTypeChange = useCallback(

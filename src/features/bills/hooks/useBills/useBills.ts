@@ -10,7 +10,7 @@ interface UseBillsResult {
   isFetching: boolean;
   isPlaceholderData: boolean;
   error: string | null;
-  refetch: () => Promise<unknown>;
+  refetch: () => void;
 }
 
 export function useBills(page: number, rowsPerPage: number, enabled = true): UseBillsResult {
@@ -42,6 +42,6 @@ export function useBills(page: number, rowsPerPage: number, enabled = true): Use
         ? query.error.message
         : String(query.error)
       : null,
-    refetch: query.refetch,
+    refetch: () => { void query.refetch(); },
   };
 }

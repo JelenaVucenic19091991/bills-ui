@@ -1,4 +1,5 @@
 import { Alert, Box, Button, LinearProgress, Tab, Tabs } from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
 import { STRINGS } from '@/shared/constants/strings';
 import { useBillsPageState } from '@/features/bills/hooks/useBillsPageState';
 import { BillsTable, BillsTableSkeleton } from '@/features/bills/components/BillsTable';
@@ -25,11 +26,18 @@ export function BillsPage(): React.ReactElement {
     favouriteUris,
     onFavouriteToggle,
     selectedBill,
+    isModalOpen,
     isPlaceholderData,
     onRowClick,
     onCloseModal,
     onModalExited,
   } = useBillsPageState();
+
+  const statusMessage = isLoading
+    ? STRINGS.status.loading
+    : error
+      ? STRINGS.status.error
+      : STRINGS.status.loaded(totalCount);
 
   return (
     <Box>
@@ -49,6 +57,10 @@ export function BillsPage(): React.ReactElement {
       )}
 
       <Box sx={{ position: 'relative' }}>
+        <Box role="status" aria-live="polite" sx={visuallyHidden}>
+          {statusMessage}
+        </Box>
+
         {isFetching && !isLoading && (
           <LinearProgress sx={{ position: 'absolute', top: 0, left: 0, right: 0 }} />
         )}
@@ -93,7 +105,7 @@ export function BillsPage(): React.ReactElement {
 
       <BillDetailsModal
         bill={selectedBill}
-        open={selectedBill !== null}
+        open={isModalOpen}
         onClose={onCloseModal}
         onExited={onModalExited}
       />

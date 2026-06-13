@@ -8,7 +8,6 @@ interface UseFavouritesResult {
   favourites: Bill[];
   favouriteUris: string[];
   toggleFavourite: (bill: Bill) => void;
-  isFavourite: (uri: string) => boolean;
 }
 
 export function useFavourites(): UseFavouritesResult {
@@ -28,12 +27,7 @@ export function useFavourites(): UseFavouritesResult {
     [setFavourites]
   );
 
-  const isFavourite = useCallback(
-    (uri: string) => favourites.some((b) => b.uri === uri),
-    [favourites]
-  );
-
   const favouriteUris = useMemo(() => favourites.map((b) => b.uri), [favourites]);
 
-  return { favourites, favouriteUris, toggleFavourite, isFavourite };
+  return { favourites, favouriteUris, toggleFavourite };
 }

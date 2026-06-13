@@ -8,7 +8,7 @@ import type {
 } from '@/features/bills/types/bill';
 import { BILL_TYPES, BILL_STATUSES } from '@/features/bills/types/bill';
 
- const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!BASE_URL) {
   throw new Error('VITE_API_BASE_URL is not defined. Check your .env file.');
@@ -30,7 +30,7 @@ function toBillType(value: string): BillType {
     return value as BillType;
   }
   console.warn(`Unexpected billType from API: "${value}", mapping to 'Unknown'`);
-  return BILL_TYPES[0];
+  return 'Unknown';
 }
 
 function toBillStatus(value: string): BillStatus {
@@ -40,7 +40,7 @@ function toBillStatus(value: string): BillStatus {
   console.warn(
     `Unexpected status from API: "${value}", mapping to 'Unknown'`
   );
-  return BILL_STATUSES[0];
+  return 'Unknown';
 }
 
 function resolveSponsor(sponsors: ApiBillSponsor[]): string {
