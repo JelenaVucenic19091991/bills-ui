@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Container, Box, Typography } from '@mui/material';
 
 interface PageLayoutProps {
@@ -6,7 +7,7 @@ interface PageLayoutProps {
   children: React.ReactNode;
 }
 
-export function PageLayout({ title, subtitle, children }: PageLayoutProps): React.ReactElement {
+export function PageLayout({ title, subtitle, children }: PageLayoutProps): ReactElement {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>

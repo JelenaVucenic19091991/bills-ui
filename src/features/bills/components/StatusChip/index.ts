@@ -1,1 +1,1 @@
-export {StatusChip} from './StatusChip';
+export { StatusChip } from './StatusChip';

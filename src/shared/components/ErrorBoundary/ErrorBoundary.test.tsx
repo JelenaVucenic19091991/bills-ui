@@ -42,9 +42,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(
-      screen.getByRole('button', { name: STRINGS.error.tryAgain })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: STRINGS.error.tryAgain })).toBeInTheDocument();
 
     vi.restoreAllMocks();
   });

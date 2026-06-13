@@ -1,6 +1,6 @@
 import { IconButton } from '@mui/material';
 import { Star, StarBorder } from '@mui/icons-material';
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
 
 interface FavouriteButtonProps {
   isFavourite: boolean;
@@ -12,7 +12,7 @@ export function FavouriteButton({
   isFavourite,
   onToggle,
   ariaLabel,
-}: FavouriteButtonProps): React.ReactElement {
+}: FavouriteButtonProps): ReactElement {
   function handleClick(event: MouseEvent<HTMLButtonElement>): void {
     event.stopPropagation();
     onToggle();

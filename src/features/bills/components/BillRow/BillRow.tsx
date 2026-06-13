@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from '@mui/material';
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, ReactElement } from 'react';
 import { STRINGS } from '@/shared/constants/strings';
 import { FavouriteButton } from '@/shared/components/FavouriteButton';
 import { StatusChip } from '@/features/bills/components/StatusChip';
@@ -17,7 +17,7 @@ export function BillRow({
   isFavourite,
   onRowClick,
   onFavouriteToggle,
-}: BillRowProps): React.ReactElement {
+}: BillRowProps): ReactElement {
   function handleKeyDown(event: KeyboardEvent<HTMLTableRowElement>): void {
     // Only activate when the row itself is focused — not a child control
     // (e.g. the favourite button), which handles its own interaction.

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Alert, Box, Button, LinearProgress, Tab, Tabs } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { STRINGS } from '@/shared/constants/strings';
@@ -6,7 +7,7 @@ import { BillsTable, BillsTableSkeleton } from '@/features/bills/components/Bill
 import { BillTypeFilter } from '@/features/bills/components/BillTypeFilter';
 import { BillDetailsModal } from '@/features/bills/components/BillDetailsModal';
 
-export function BillsPage(): React.ReactElement {
+export function BillsPage(): ReactElement {
   const {
     activeTab,
     isFavouritesTab,
@@ -44,10 +45,21 @@ export function BillsPage(): React.ReactElement {
       <Tabs
         value={activeTab}
         onChange={onTabChange}
+        aria-label={STRINGS.tabs.ariaLabel}
         sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
       >
-        <Tab label={STRINGS.tabs.allBills} value="all" />
-        <Tab label={STRINGS.tabs.favouriteBills} value="favourites" />
+        <Tab
+          label={STRINGS.tabs.allBills}
+          value="all"
+          id="bills-tab-all"
+          aria-controls="bills-tabpanel"
+        />
+        <Tab
+          label={STRINGS.tabs.favouriteBills}
+          value="favourites"
+          id="bills-tab-favourites"
+          aria-controls="bills-tabpanel"
+        />
       </Tabs>
 
       {!isFavouritesTab && (
@@ -56,7 +68,12 @@ export function BillsPage(): React.ReactElement {
         </Box>
       )}
 
-      <Box sx={{ position: 'relative' }}>
+      <Box
+        sx={{ position: 'relative' }}
+        role="tabpanel"
+        id="bills-tabpanel"
+        aria-labelledby={activeTab === 'all' ? 'bills-tab-all' : 'bills-tab-favourites'}
+      >
         <Box role="status" aria-live="polite" sx={visuallyHidden}>
           {statusMessage}
         </Box>
@@ -76,7 +93,7 @@ export function BillsPage(): React.ReactElement {
               </Button>
             }
           >
-            {error}
+            {STRINGS.status.error}
           </Alert>
         ) : (
           <Box

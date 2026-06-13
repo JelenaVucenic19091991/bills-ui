@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ReactElement } from 'react';
 import {
   Box,
   Button,
@@ -25,7 +26,7 @@ export function BillDetailsModal({
   open,
   onClose,
   onExited,
-}: BillDetailsModalProps): React.ReactElement {
+}: BillDetailsModalProps): ReactElement {
   return (
     <Dialog
       open={open}
@@ -50,7 +51,7 @@ interface BillDetailsContentProps {
  * not via an effect. Kept mounted by the parent Dialog during the exit
  * transition, so content doesn't blank out mid-animation.
  */
-function BillDetailsContent({ bill, onClose }: BillDetailsContentProps): React.ReactElement {
+function BillDetailsContent({ bill, onClose }: BillDetailsContentProps): ReactElement {
   const [activeTab, setActiveTab] = useState(0);
 
   const titleTabs = [

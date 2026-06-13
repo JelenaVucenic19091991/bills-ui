@@ -12,6 +12,7 @@ export const STRINGS = {
   tabs: {
     allBills: 'All Bills',
     favouriteBills: 'Favourite Bills',
+    ariaLabel: 'Bill list views',
   },
   table: {
     columns: {
@@ -23,8 +24,7 @@ export const STRINGS = {
     },
     ariaLabel: 'Bills table',
     emptyAllBills: 'No bills match the selected filter.',
-    emptyFavourites:
-      'No favourite bills yet. Click the star icon to add bills to your favourites.',
+    emptyFavourites: 'No favourite bills yet. Click the star icon to add bills to your favourites.',
   },
   filter: {
     label: 'Filter by Bill Type',

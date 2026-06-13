@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import {
   Paper,
   Skeleton,
@@ -17,7 +18,7 @@ interface BillsTableSkeletonProps {
 
 export function BillsTableSkeleton({
   rowsPerPage = ROWS_PER_PAGE_DEFAULT,
-}: BillsTableSkeletonProps): React.ReactElement {
+}: BillsTableSkeletonProps): ReactElement {
   return (
     <Paper elevation={1}>
       <TableContainer sx={{ overflowX: 'auto' }}>
@@ -25,7 +26,9 @@ export function BillsTableSkeleton({
           <TableHead>
             <TableRow>
               {BILL_TABLE_COLUMNS.map((col) => (
-                <TableCell key={col.key} align={col.align}>{col.label}</TableCell>
+                <TableCell key={col.key} align={col.align}>
+                  {col.label}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>

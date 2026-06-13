@@ -55,4 +55,3 @@ export interface Bill {
 }
 
 export type TabValue = 'all' | 'favourites';
-

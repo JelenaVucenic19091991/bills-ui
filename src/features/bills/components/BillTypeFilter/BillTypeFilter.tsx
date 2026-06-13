@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Box, FormControl, InputLabel, MenuItem, Select, Tooltip, IconButton } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import type { SelectChangeEvent } from '@mui/material';
@@ -13,7 +14,7 @@ interface BillTypeFilterProps {
 export function BillTypeFilter({
   selectedBillType,
   onChange,
-}: BillTypeFilterProps): React.ReactElement {
+}: BillTypeFilterProps): ReactElement {
   function handleChange(event: SelectChangeEvent): void {
     onChange(event.target.value as BillTypeFilterValue);
   }

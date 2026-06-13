@@ -57,18 +57,14 @@ describe('usePagination', () => {
   it('clamps automatically when page exceeds totalPages (e.g. items shrink)', () => {
     const onPageChange = vi.fn();
     // page 5 but only 25 items / 10 per page = 3 pages (max index 2)
-    renderHook(() =>
-      usePagination({ totalItems: 25, rowsPerPage: 10, page: 5, onPageChange })
-    );
+    renderHook(() => usePagination({ totalItems: 25, rowsPerPage: 10, page: 5, onPageChange }));
     // the clamp useEffect should fire on mount
     expect(onPageChange).toHaveBeenCalledWith(2);
   });
 
   it('does not clamp when page is within bounds', () => {
     const onPageChange = vi.fn();
-    renderHook(() =>
-      usePagination({ totalItems: 25, rowsPerPage: 10, page: 1, onPageChange })
-    );
+    renderHook(() => usePagination({ totalItems: 25, rowsPerPage: 10, page: 1, onPageChange }));
     expect(onPageChange).not.toHaveBeenCalled();
   });
 });

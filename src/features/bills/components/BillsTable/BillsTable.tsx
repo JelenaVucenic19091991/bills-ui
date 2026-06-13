@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import {
   Paper,
   Table,
@@ -38,7 +39,7 @@ export function BillsTable({
   onRowClick,
   onFavouriteToggle,
   emptyMessage = STRINGS.table.emptyAllBills,
-}: BillsTableProps): React.ReactElement {
+}: BillsTableProps): ReactElement {
   return (
     <Paper elevation={1}>
       <TableContainer sx={{ overflowX: 'auto' }}>
@@ -46,7 +47,9 @@ export function BillsTable({
           <TableHead>
             <TableRow>
               {BILL_TABLE_COLUMNS.map((col) => (
-                <TableCell key={col.key} align={col.align}>{col.label}</TableCell>
+                <TableCell key={col.key} align={col.align}>
+                  {col.label}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>

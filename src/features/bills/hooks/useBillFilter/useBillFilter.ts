@@ -11,8 +11,7 @@ interface UseBillFilterResult {
 }
 
 export function useBillFilter(): UseBillFilterResult {
-  const [selectedBillType, setSelectedBillType] =
-    useState<BillTypeFilterValue>(ALL_FILTER);
+  const [selectedBillType, setSelectedBillType] = useState<BillTypeFilterValue>(ALL_FILTER);
 
   const setBillType = useCallback((billType: BillTypeFilterValue) => {
     setSelectedBillType(billType);

@@ -42,6 +42,8 @@ export function useBills(page: number, rowsPerPage: number, enabled = true): Use
         ? query.error.message
         : String(query.error)
       : null,
-    refetch: () => { void query.refetch(); },
+    refetch: () => {
+      void query.refetch();
+    },
   };
 }

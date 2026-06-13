@@ -37,9 +37,7 @@ function toBillStatus(value: string): BillStatus {
   if ((BILL_STATUSES as readonly string[]).includes(value)) {
     return value as BillStatus;
   }
-  console.warn(
-    `Unexpected status from API: "${value}", mapping to 'Unknown'`
-  );
+  console.warn(`Unexpected status from API: "${value}", mapping to 'Unknown'`);
   return 'Unknown';
 }
 

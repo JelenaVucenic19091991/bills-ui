@@ -85,10 +85,13 @@ export function useBillsPageState(): UseBillsPageStateResult {
     [setBillType, goToFirstPage]
   );
 
-  const onRowsPerPageChange = useCallback((newRowsPerPage: number) => {
-    setRowsPerPageState(newRowsPerPage);
-    goToFirstPage();
-  }, [goToFirstPage]);
+  const onRowsPerPageChange = useCallback(
+    (newRowsPerPage: number) => {
+      setRowsPerPageState(newRowsPerPage);
+      goToFirstPage();
+    },
+    [goToFirstPage]
+  );
 
   const onFavouriteToggle = useCallback(
     (uri: string) => {
